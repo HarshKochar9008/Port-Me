@@ -1,4 +1,3 @@
-
 import { Project } from "@/lib/projectData";
 import { useInView } from "@/lib/animations";
 import { ExternalLink, Github } from "lucide-react";
@@ -27,7 +26,7 @@ const ProjectCard = ({ project, index }: ProjectCardProps) => {
       style={{ transitionDelay: `${index * 150}ms` }}
     >
       <div className="flex flex-col md:flex-row">
-        <div className="md:w-1/2 relative overflow-hidden h-64 md:h-auto">
+        <div className="md:w-1/2 relative h-48 sm:h-64 md:h-auto">
           <div 
             className={`absolute inset-0 bg-gray-200 ${!imageLoaded ? 'animate-pulse' : ''}`}
           ></div>
@@ -41,27 +40,27 @@ const ProjectCard = ({ project, index }: ProjectCardProps) => {
           />
         </div>
         
-        <div className="md:w-1/2 p-6 md:p-8 flex flex-col">
-          <h3 className="text-xl md:text-2xl font-bold mb-2">{project.title}</h3>
+        <div className="md:w-1/2 p-4 sm:p-6 md:p-8 flex flex-col">
+          <h3 className="text-lg sm:text-xl md:text-2xl font-bold mb-2">{project.title}</h3>
           
-          <p className="text-primary/70 mb-4 flex-grow">{project.description}</p>
+          <p className="text-sm sm:text-base text-primary/70 mb-4 flex-grow">{project.description}</p>
           
-          <div className="mb-6">
+          <div className="mb-4 sm:mb-6">
             <div className="flex flex-wrap gap-2">
               {project.techStack.map((tech) => (
-                <Badge key={tech} variant="secondary" className="font-normal">
+                <Badge key={tech} variant="secondary" className="text-xs sm:text-sm font-normal">
                   {tech}
                 </Badge>
               ))}
             </div>
           </div>
           
-          <div className="flex gap-3">
+          <div className="flex flex-col sm:flex-row gap-2 sm:gap-3">
             <Button 
               asChild
               variant="default" 
               size="sm"
-              className="rounded-md flex items-center"
+              className="w-full sm:w-auto rounded-md flex items-center justify-center"
             >
               <a href={project.demoUrl} target="_blank" rel="noopener noreferrer">
                 <ExternalLink size={16} className="mr-2" />
@@ -73,7 +72,7 @@ const ProjectCard = ({ project, index }: ProjectCardProps) => {
               asChild
               variant="outline" 
               size="sm" 
-              className="rounded-md flex items-center"
+              className="w-full sm:w-auto rounded-md flex items-center justify-center"
             >
               <a href={project.githubUrl} target="_blank" rel="noopener noreferrer">
                 <Github size={16} className="mr-2" />

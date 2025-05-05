@@ -12,7 +12,7 @@ export interface Project {
 export const projects: Project[] = [
   {
     id: "project-1",
-    title: "E-Commerce Platform",
+    title: " Twitter AI Agent",
     description: "A full-featured e-commerce platform with product catalog, shopping cart, and secure checkout.",
     image: "https://images.unsplash.com/photo-1486312338219-ce68d2c6f44d",
     demoUrl: "https://example.com/demo1",
@@ -21,7 +21,7 @@ export const projects: Project[] = [
   },
   {
     id: "project-2",
-    title: "Task Management App",
+    title: "Curd Application",
     description: "A collaborative task management application with real-time updates and team sharing capabilities.",
     image: "https://images.unsplash.com/photo-1488590528505-98d2b5aba04b",
     demoUrl: "https://example.com/demo2",
@@ -30,7 +30,7 @@ export const projects: Project[] = [
   },
   {
     id: "project-3",
-    title: "Financial Dashboard",
+    title: "E-Commerce Platform",
     description: "An interactive dashboard visualizing financial data with advanced filtering and reporting features.",
     image: "https://images.unsplash.com/photo-1518770660439-4636190af475",
     demoUrl: "https://example.com/demo3",
@@ -39,7 +39,7 @@ export const projects: Project[] = [
   },
   {
     id: "project-4",
-    title: "AI Content Generator",
+    title: "AI Government Chatbot",
     description: "A machine learning-powered tool that generates custom content based on user preferences.",
     image: "https://images.unsplash.com/photo-1461749280684-dccba630e2f6",
     demoUrl: "https://example.com/demo4",

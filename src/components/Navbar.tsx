@@ -1,10 +1,15 @@
-
 import { useState, useEffect } from 'react';
 import { Button } from "@/components/ui/button";
 import { ThemeToggle } from "./ThemeToggle";
+import { useInView } from "@/lib/animations";
+import { Moon, Sun } from "lucide-react";
+import { useTheme } from "next-themes";
+import TrueFocus from "./TrueFocus";
 
 const Navbar = () => {
   const [scrolled, setScrolled] = useState(false);
+  const [ref, isInView] = useInView();
+  const { theme, setTheme } = useTheme();
   
   useEffect(() => {
     const handleScroll = () => {
@@ -32,7 +37,17 @@ const Navbar = () => {
             href="#hero" 
             className="text-xl font-medium text-primary transition-colors hover:text-primary/80"
           >
-            Developer
+            <div className="navbar">
+              <TrueFocus 
+                sentence="Harsh Kochar"
+                manualMode={true}
+                blurAmount={5}
+                borderColor="hsl(var(--primary))"
+                animationDuration={0.6}
+                pauseBetweenAnimations={0.5}
+              />
+            </div>
+            
           </a>
           
           <ul className="hidden md:flex items-center space-x-8">
@@ -49,7 +64,16 @@ const Navbar = () => {
           </ul>
           
           <div className="flex items-center gap-4">
-            <ThemeToggle />
+            <Button
+              variant="ghost"
+              size="icon"
+              onClick={() => setTheme(theme === "dark" ? "light" : "dark")}
+              className="text-muted-foreground hover:text-foreground"
+            >
+              <Sun className="h-5 w-5 rotate-0 scale-100 transition-all dark:-rotate-90 dark:scale-0" />
+              <Moon className="absolute h-5 w-5 rotate-90 scale-0 transition-all dark:rotate-0 dark:scale-100" />
+              <span className="sr-only">Toggle theme</span>
+            </Button>
             <Button 
               onClick={() => handleNavClick('contact')}
               className="bg-primary text-primary-foreground rounded-md hover:bg-primary/90 transition"

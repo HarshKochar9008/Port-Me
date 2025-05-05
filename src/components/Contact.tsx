@@ -1,4 +1,3 @@
-
 import { useState } from "react";
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
@@ -7,6 +6,8 @@ import { Label } from "@/components/ui/label";
 import { useInView } from "@/lib/animations";
 import { useToast } from "@/hooks/use-toast";
 import { Mail, Phone, MapPin } from "lucide-react";
+import SpotlightCard from "./SpotlightCard";
+import emailjs from '@emailjs/browser';
 
 interface FormData {
   name: string;
@@ -31,12 +32,23 @@ const Contact = () => {
     setFormData((prev) => ({ ...prev, [name]: value }));
   };
   
-  const handleSubmit = (e: React.FormEvent) => {
+  const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
     setIsSubmitting(true);
     
-    // Simulate form submission
-    setTimeout(() => {
+    try {
+      await emailjs.send(
+        'service_cfanzlk',
+        'template_kiz2db6',
+        {
+          name: formData.name,
+          email: formData.email,
+          message: formData.message,
+          reply_to: formData.email,
+        },
+        'NWy4KbsPd3UpnnrxE'
+      );
+
       toast({
         title: "Message sent!",
         description: "Thank you for your message. I'll get back to you soon.",
@@ -47,9 +59,15 @@ const Contact = () => {
         email: "",
         message: ""
       });
-      
+    } catch (error) {
+      toast({
+        title: "Error",
+        description: "Failed to send message. Please try again later.",
+        variant: "destructive",
+      });
+    } finally {
       setIsSubmitting(false);
-    }, 1500);
+    }
   };
   
   return (
@@ -81,7 +99,7 @@ const Contact = () => {
               ? 'opacity-100 translate-x-0' 
               : 'opacity-0 -translate-x-10'
           }`}>
-            <div className="glass-card rounded-xl p-6 md:p-8 h-full">
+            <SpotlightCard className="glass-card rounded-xl p-6 md:p-8 h-full" spotlightColor="rgba(0, 140, 255, 0.52)">
               <h3 className="text-xl font-bold mb-6">Contact Information</h3>
               
               <div className="space-y-6">
@@ -92,11 +110,10 @@ const Contact = () => {
                   <div className="ml-4">
                     <p className="text-sm text-muted-foreground mb-1">Email</p>
                     <a href="harshkocahr88@gmail.com" className="text-foreground hover:text-primary transition-colors">
-                    harshkocahr88@gmail.com
+                    harshkochar88@gmail.com
                     </a>
                   </div>
                 </div>
-                
                 <div className="flex items-start">
                   <div className="flex-shrink-0 w-10 h-10 flex items-center justify-center rounded-full bg-primary/10 text-primary">
                     <Phone size={20} />
@@ -108,7 +125,6 @@ const Contact = () => {
                     </a>
                   </div>
                 </div>
-                
                 <div className="flex items-start">
                   <div className="flex-shrink-0 w-10 h-10 flex items-center justify-center rounded-full bg-primary/10 text-primary">
                     <MapPin size={20} />
@@ -119,7 +135,7 @@ const Contact = () => {
                   </div>
                 </div>
               </div>
-            </div>
+            </SpotlightCard>
           </div>
           
           <div className={`transition-all duration-700 ${
@@ -127,7 +143,7 @@ const Contact = () => {
               ? 'opacity-100 translate-x-0' 
               : 'opacity-0 translate-x-10'
           }`}>
-            <div className="glass-card rounded-xl p-6 md:p-8">
+            <SpotlightCard className="glass-card rounded-xl p-6 md:p-8 h-full" spotlightColor="rgba(0, 140, 255, 0.52)">
               <form onSubmit={handleSubmit} className="space-y-6">
                 <div className="space-y-2">
                   <Label htmlFor="name">Name</Label>
@@ -177,7 +193,7 @@ const Contact = () => {
                   {isSubmitting ? "Sending..." : "Send Message"}
                 </Button>
               </form>
-            </div>
+            </SpotlightCard>
           </div>
         </div>
       </div>
