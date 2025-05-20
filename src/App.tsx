@@ -34,9 +34,6 @@ const App = () => {
           <div className="relative min-h-screen">
             <Dock 
               items={items}
-              panelHeight={68}
-              baseItemSize={50}
-              magnification={70}
             />
             <Routes>
               <Route path="/" element={<Index />} />

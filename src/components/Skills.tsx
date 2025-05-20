@@ -5,28 +5,40 @@ import { motion } from "framer-motion";
 interface Skill {
   category: string;
   items: string[];
+  size?: "small" | "medium" | "large";
+  color?: "primary" | "secondary" | "accent";
 }
 
 const skills: Skill[] = [
   {
     category: "Frontend",
-    items: ["React", "Next.js", "TypeScript", "Tailwind CSS", "Redux", "HTML/CSS", "JavaScript"]
+    items: ["React", "Next.js", "TypeScript", "Tailwind CSS", "Redux", "HTML/CSS", "JavaScript"],
+    size: "medium",
+    color: "primary"
   },
   {
     category: "Backend",
-    items: ["Node.js", "Express", "Python", "Java", "RESTful APIs"]
+    items: ["Node.js", "Express", "Python", "Java", "RESTful APIs"],
+    size: "small",
+    color: "secondary"
   },
   {
     category: "Database",
-    items: ["MongoDB", "PostgreSQL", "MySQL", "Firebase", "SQL"]
+    items: ["MongoDB", "PostgreSQL", "MySQL", "Firebase", "SQL"],
+    size: "small",
+    color: "accent"
   },
   {
     category: "DevOps",
-    items: ["Docker", "GitHub Actions", "Linux"]
+    items: ["Docker", "GitHub Actions", "Linux"],
+    size: "small",
+    color: "primary"
   },
   {
     category: "Tools",
-    items: ["Git", "VS Code", "Figma", "Postman", "npm/yarn"]
+    items: ["Git", "VS Code", "Figma", "Postman", "npm/yarn"],
+    size: "medium",
+    color: "secondary"
   }
 ];
 
@@ -90,9 +102,17 @@ const Skills = () => {
             </motion.p>
           </motion.div>
           
-          <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-4 sm:gap-6 lg:gap-8">
+          <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-4 sm:gap-6 lg:gap-8 auto-rows-[minmax(180px,auto)]">
             {skills.map((skill, categoryIndex) => {
               const delays = useStaggeredAnimation(skill.items.length);
+              const gridSpan = skill.size === "large" ? "lg:col-span-2 lg:row-span-2" : 
+                             skill.size === "medium" ? "lg:col-span-2" : "";
+              
+              const colorClasses = {
+                primary: "from-white/60 to-white/30 dark:from-white/10 dark:to-white/5",
+                secondary: "from-white/60 to-white/30 dark:from-white/10 dark:to-white/5",
+                accent: "from-white/60 to-white/30 dark:from-white/10 dark:to-white/5"
+              };
               
               return (
                 <motion.div 
@@ -100,9 +120,9 @@ const Skills = () => {
                   initial={{ opacity: 0, y: 20 }}
                   animate={isInView ? { opacity: 1, y: 0 } : { opacity: 0, y: 20 }}
                   transition={{ duration: 0.5, delay: categoryIndex * 0.1 }}
-                  className="relative"
+                  className={`relative ${gridSpan}`}
                 >
-                  <div className="bg-white/5 backdrop-blur-sm rounded-xl p-4 sm:p-6 border border-white/10 hover:border-primary/20 transition-colors duration-300">
+                  <div className={`bg-gradient-to-br ${colorClasses[skill.color || 'primary']} backdrop-blur-xl rounded-xl p-4 sm:p-6 border border-gray-300/60 dark:border-white/10 hover:border-gray-400/80 dark:hover:border-white/20 transition-all duration-300 h-full hover:scale-[1.02] shadow-xl dark:hover:shadow-[0_8px_30px_rgb(255,255,255,0.12)] before:absolute before:inset-0 before:bg-gradient-to-br before:from-gray-100/10 before:to-transparent dark:before:from-white/5 before:rounded-xl before:opacity-0 hover:before:opacity-100 before:transition-opacity before:duration-300`}>
                     <h3 className="text-xl sm:text-2xl font-bold text-primary mb-4 sm:mb-6">
                       {skill.category}
                     </h3>
@@ -121,16 +141,6 @@ const Skills = () => {
                             <div className="absolute inset-0 bg-primary/20 rounded-full blur-sm group-hover/item:scale-150 transition-transform duration-300"></div>
                           </div>
                           <span className="text-primary/80 group-hover/item:text-primary transition-colors duration-300">{item}</span>
-                          <div className="ml-auto flex items-center">
-                            {/* <div className="w-16 h-1.5 bg-primary/10 rounded-full overflow-hidden">
-                              <motion.div 
-                                initial={{ width: 0 }}
-                                animate={isInView ? { width: `${Math.random() * 60 + 40}%` } : { width: 0 }}
-                                transition={{ duration: 1, delay: categoryIndex * 0.1 + itemIndex * 0.05 }}
-                                className="h-full bg-primary rounded-full"
-                              />
-                            </div> */}
-                          </div>
                         </motion.li>
                       ))}
                     </ul>

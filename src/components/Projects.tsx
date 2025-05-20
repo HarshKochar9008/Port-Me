@@ -31,9 +31,9 @@ const Projects = () => {
           </p>
         </div>
         
-        <div className="grid grid-cols-1 md:grid-cols-2 gap-8">
+        <div className="grid grid-cols-1 md:grid-cols-2 gap-8 md:justify-center md:items-start">
           {/* Left column */}
-          <div className="flex flex-col gap-8">
+          <div className="flex flex-col gap-8 items-center w-full">
             {leftColumn.map((project, i) => (
               <ProjectCard 
                 key={project.id} 
@@ -43,7 +43,7 @@ const Projects = () => {
             ))}
           </div>
           {/* Right column */}
-          <div className="flex flex-col gap-8">
+          <div className="flex flex-col gap-8 items-center w-full">
             {rightColumn.map((project, i) => (
               <ProjectCard 
                 key={project.id} 
