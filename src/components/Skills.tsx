@@ -1,7 +1,34 @@
-import { skills } from "@/lib/projectData";
 import { useInView, useStaggeredAnimation } from "@/lib/animations";
 import Ribbons from "./Ribbons";
 import { motion } from "framer-motion";
+
+interface Skill {
+  category: string;
+  items: string[];
+}
+
+const skills: Skill[] = [
+  {
+    category: "Frontend",
+    items: ["React", "Next.js", "TypeScript", "Tailwind CSS", "Redux", "HTML/CSS", "JavaScript"]
+  },
+  {
+    category: "Backend",
+    items: ["Node.js", "Express", "Python", "Java", "RESTful APIs"]
+  },
+  {
+    category: "Database",
+    items: ["MongoDB", "PostgreSQL", "MySQL", "Firebase", "SQL"]
+  },
+  {
+    category: "DevOps",
+    items: ["Docker", "GitHub Actions", "Linux"]
+  },
+  {
+    category: "Tools",
+    items: ["Git", "VS Code", "Figma", "Postman", "npm/yarn"]
+  }
+];
 
 const Skills = () => {
   const [ref, isInView] = useInView({ threshold: 0.1 });
@@ -95,14 +122,14 @@ const Skills = () => {
                           </div>
                           <span className="text-primary/80 group-hover/item:text-primary transition-colors duration-300">{item}</span>
                           <div className="ml-auto flex items-center">
-                            <div className="w-16 h-1.5 bg-primary/10 rounded-full overflow-hidden">
+                            {/* <div className="w-16 h-1.5 bg-primary/10 rounded-full overflow-hidden">
                               <motion.div 
                                 initial={{ width: 0 }}
                                 animate={isInView ? { width: `${Math.random() * 60 + 40}%` } : { width: 0 }}
                                 transition={{ duration: 1, delay: categoryIndex * 0.1 + itemIndex * 0.05 }}
                                 className="h-full bg-primary rounded-full"
                               />
-                            </div>
+                            </div> */}
                           </div>
                         </motion.li>
                       ))}

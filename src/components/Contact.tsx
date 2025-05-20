@@ -109,7 +109,7 @@ const Contact = () => {
                   </div>
                   <div className="ml-4">
                     <p className="text-sm text-muted-foreground mb-1">Email</p>
-                    <a href="harshkocahr88@gmail.com" className="text-foreground hover:text-primary transition-colors">
+                    <a href="mailto:harshkochar88@gmail.com" className="text-foreground hover:text-primary transition-colors">
                     harshkochar88@gmail.com
                     </a>
                   </div>
@@ -120,7 +120,7 @@ const Contact = () => {
                   </div>
                   <div className="ml-4">
                     <p className="text-sm text-muted-foreground mb-1">Phone</p>
-                    <a href="tel:+1234567890" className="text-foreground hover:text-primary transition-colors">
+                    <a href="tel:+91 7030649008" className="text-foreground hover:text-primary transition-colors">
                       +91 7030649008
                     </a>
                   </div>
@@ -131,7 +131,7 @@ const Contact = () => {
                   </div>
                   <div className="ml-4">
                     <p className="text-sm text-muted-foreground mb-1">Location</p>
-                    <p className="text-foreground">Banglore, India</p>
+                    <a href="map" className="text-foreground">Bangalore, India</a>
                   </div>
                 </div>
               </div>

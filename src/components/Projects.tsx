@@ -1,11 +1,13 @@
-
-import { projects } from "@/lib/projectData";
-import ProjectCard from "./ProjectCard";
+import ProjectCard, { projects } from "./ProjectCard";
 import { useInView } from "@/lib/animations";
 
 const Projects = () => {
   const [ref, isInView] = useInView({ threshold: 0.1 });
   
+  // Split projects into two columns
+  const leftColumn = projects.filter((_, idx) => idx % 2 === 0);
+  const rightColumn = projects.filter((_, idx) => idx % 2 === 1);
+
   return (
     <section id="projects" className="">
       <div className="section-container" ref={ref}>
@@ -29,17 +31,29 @@ const Projects = () => {
           </p>
         </div>
         
-        <div className="grid grid-cols-1 gap-10">
-          {projects.map((project, index) => (
-            <ProjectCard 
-              key={project.id} 
-              project={project} 
-              index={index} 
-            />
-          ))}
+        <div className="grid grid-cols-1 md:grid-cols-2 gap-8">
+          {/* Left column */}
+          <div className="flex flex-col gap-8">
+            {leftColumn.map((project, i) => (
+              <ProjectCard 
+                key={project.id} 
+                project={project} 
+                index={i * 2} // original index
+              />
+            ))}
+          </div>
+          {/* Right column */}
+          <div className="flex flex-col gap-8">
+            {rightColumn.map((project, i) => (
+              <ProjectCard 
+                key={project.id} 
+                project={project} 
+                index={i * 2 + 1} // original index
+              />
+            ))}
+          </div>
         </div>
       </div>
-
     </section>
   );
 };

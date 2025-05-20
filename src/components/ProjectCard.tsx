@@ -1,9 +1,57 @@
-import { Project } from "@/lib/projectData";
 import { useInView } from "@/lib/animations";
 import { ExternalLink, Github } from "lucide-react";
 import { Button } from "@/components/ui/button";
 import { Badge } from "@/components/ui/badge";
-import { useState } from "react";
+import { useState, useRef, useEffect } from "react";
+
+export interface Project {
+  id: string;
+  title: string;
+  description: string;
+  image: string;
+  demoUrl: string;
+  githubUrl: string;
+  techStack: string[];
+}
+
+export const projects: Project[] = [
+  {
+    id: "project-1",
+    title: "Twitter AI Agent",
+    description: "A full-featured e-commerce platform with product catalog, shopping cart, and secure checkout.",
+    image: "https://images.unsplash.com/photo-1486312338219-ce68d2c6f44d",
+    demoUrl: "https://example.com/demo1",
+    githubUrl: "https://github.com/username/ecommerce",
+    techStack: ["React", "Node.js", "Express", "MongoDB", "Stripe API"]
+  },
+  {
+    id: "project-2",
+    title: "Crud Application",
+    description: "A collaborative task management application with real-time updates and team sharing capabilities.",
+    image: "https://images.unsplash.com/photo-1488590528505-98d2b5aba04b",
+    demoUrl: "https://example.com/demo2",
+    githubUrl: "https://github.com/username/taskapp",
+    techStack: ["React", "Firebase", "Tailwind CSS", "React DnD"]
+  },
+  {
+    id: "project-3",
+    title: "E-Commerce Platform",
+    description: "An interactive dashboard visualizing financial data with advanced filtering and reporting features.",
+    image: "https://images.unsplash.com/photo-1518770660439-4636190af475",
+    demoUrl: "https://example.com/demo3",
+    githubUrl: "https://github.com/username/finance-dashboard",
+    techStack: ["React", "TypeScript", "Express", "PostgreSQL"]
+  },
+  {
+    id: "project-4",
+    title: "AI Government Chatbot",
+    description: "A machine learning-powered tool that generates custom content based on user preferences.",
+    image: "https://images.unsplash.com/photo-1461749280684-dccba630e2f6",
+    demoUrl: "https://example.com/demo4",
+    githubUrl: "https://github.com/username/ai-content",
+    techStack: ["React", "Python", "TensorFlow", "Flask"]
+  }
+];
 
 interface ProjectCardProps {
   project: Project;
@@ -13,75 +61,137 @@ interface ProjectCardProps {
 const ProjectCard = ({ project, index }: ProjectCardProps) => {
   const [ref, isInView] = useInView();
   const [imageLoaded, setImageLoaded] = useState(false);
+  const imageRef = useRef<HTMLImageElement>(null);
+  const cardRef = useRef<HTMLDivElement>(null);
   const isEven = index % 2 === 0;
   
   const animationClass = isInView 
-    ? `opacity-100 translate-y-0 ${isEven ? 'translate-x-0' : 'translate-x-0'}`
-    : `opacity-0 translate-y-10 ${isEven ? '-translate-x-10' : 'translate-x-10'}`;
+    ? 'opacity-100 translate-y-0'
+    : 'opacity-0 translate-y-10';
+
+  useEffect(() => {
+    const handleMouseMove = (e: MouseEvent) => {
+      if (!cardRef.current || !imageRef.current) return;
+      
+      const rect = cardRef.current.getBoundingClientRect();
+      const x = e.clientX - rect.left;
+      const y = e.clientY - rect.top;
+      
+      const centerX = rect.width / 2;
+      const centerY = rect.height / 2;
+      
+      const moveX = (x - centerX) / 20;
+      const moveY = (y - centerY) / 20;
+      
+      imageRef.current.style.transform = `translate(${moveX}px, ${moveY}px) scale(1.1)`;
+    };
+
+    const handleMouseLeave = () => {
+      if (imageRef.current) {
+        imageRef.current.style.transform = 'translate(0, 0) scale(1)';
+      }
+    };
+
+    const card = cardRef.current;
+    if (card) {
+      card.addEventListener('mousemove', handleMouseMove);
+      card.addEventListener('mouseleave', handleMouseLeave);
+    }
+
+    return () => {
+      if (card) {
+        card.removeEventListener('mousemove', handleMouseMove);
+        card.removeEventListener('mouseleave', handleMouseLeave);
+      }
+    };
+  }, []);
     
   return (
     <div 
       ref={ref}
-      className={`glass-card rounded-xl overflow-hidden transition-all duration-700 ease-out ${animationClass}`}
+      className={`relative group overflow-hidden rounded-xl 
+        ${typeof window !== 'undefined' && document.documentElement.classList.contains('dark')
+          ? 'bg-gradient-to-br dark:from-white/10 dark:to-black/5 dark:bg-gradient-to-br'
+          : 'bg-slate-200'}
+        backdrop-blur-sm border border-black-200 dark:border-white/20
+        ${animationClass}
+        max-w-sm`}
       style={{ transitionDelay: `${index * 150}ms` }}
     >
-      <div className="flex flex-col md:flex-row">
-        <div className="md:w-1/2 relative h-48 sm:h-64 md:h-auto">
-          <div 
-            className={`absolute inset-0 bg-gray-200 ${!imageLoaded ? 'animate-pulse' : ''}`}
-          ></div>
-          <img
-            src={project.image}
-            alt={project.title}
-            className={`w-full h-full object-cover transition-all duration-700 ease-out ${
-              imageLoaded ? 'opacity-100 scale-100' : 'opacity-0 scale-105'
-            }`}
-            onLoad={() => setImageLoaded(true)}
-          />
+      {/* Background gradient effect */}
+      <div className="absolute inset-0 bg-gradient-to-br from-primary/5 via-transparent to-primary/5"></div>
+      
+      {/* Content container */}
+      <div className="relative z-10 p-4">
+        {/* Image section with parallax */}
+        <div className="relative mb-4 rounded-lg overflow-hidden aspect-[16/9]">
+          <div className="absolute inset-0 overflow-hidden">
+            <img
+              ref={imageRef}
+              src={project.image}
+              alt={project.title}
+              className="w-full h-full object-cover transition-transform duration-300 ease-out"
+              onLoad={() => setImageLoaded(true)}
+            />
+          </div>
+          {/* Overlay gradient */}
+          <div className="absolute inset-0 bg-gradient-to-t from-neutral-900/90 via-neutral-900/30 to-transparent dark:from-black/90 dark:via-black/30 dark:to-transparent 
+            opacity-0 group-hover:opacity-100 transition-opacity duration-500"></div>
         </div>
-        
-        <div className="md:w-1/2 p-4 sm:p-6 md:p-8 flex flex-col">
-          <h3 className="text-lg sm:text-xl md:text-2xl font-bold mb-2">{project.title}</h3>
-          
-          <p className="text-sm sm:text-base text-primary/70 mb-4 flex-grow">{project.description}</p>
-          
-          <div className="mb-4 sm:mb-6">
-            <div className="flex flex-wrap gap-2">
-              {project.techStack.map((tech) => (
-                <Badge key={tech} variant="secondary" className="text-xs sm:text-sm font-normal">
-                  {tech}
-                </Badge>
-              ))}
+
+        {/* Title and description */}
+        <div className="space-y-3">
+          <div className="flex items-start justify-between gap-2">
+            <h3 className="text-lg font-bold text-neutral-900 dark:text-white group-hover:text-primary transition-colors duration-300">
+              {project.title}
+            </h3>
+            <div className="flex gap-1">
+              <Button
+                asChild
+                variant="ghost"
+                size="icon"
+                className="h-7 w-7 rounded-full bg-neutral-100 dark:bg-white/10 hover:bg-primary/10 dark:hover:bg-primary/20 transition-all duration-300 hover:scale-110"
+              >
+                <a href={project.githubUrl} target="_blank" rel="noopener noreferrer">
+                  <Github size={14} className="text-neutral-900 dark:text-white" />
+                </a>
+              </Button>
+              <Button
+                asChild
+                variant="ghost"
+                size="icon"
+                className="h-7 w-7 rounded-full bg-neutral-100 dark:bg-white/10 hover:bg-primary/10 dark:hover:bg-primary/20 transition-all duration-300 hover:scale-110"
+              >
+                <a href={project.demoUrl} target="_blank" rel="noopener noreferrer">
+                  <ExternalLink size={14} className="text-neutral-900 dark:text-white" />
+                </a>
+              </Button>
             </div>
           </div>
-          
-          <div className="flex flex-col sm:flex-row gap-2 sm:gap-3">
-            <Button 
-              asChild
-              variant="default" 
-              size="sm"
-              className="w-full sm:w-auto rounded-md flex items-center justify-center"
-            >
-              <a href={project.demoUrl} target="_blank" rel="noopener noreferrer">
-                <ExternalLink size={16} className="mr-2" />
-                Live Demo
-              </a>
-            </Button>
-            
-            <Button 
-              asChild
-              variant="outline" 
-              size="sm" 
-              className="w-full sm:w-auto rounded-md flex items-center justify-center"
-            >
-              <a href={project.githubUrl} target="_blank" rel="noopener noreferrer">
-                <Github size={16} className="mr-2" />
-                Source Code
-              </a>
-            </Button>
+
+          <p className="text-neutral-700 dark:text-white/70 text-xs leading-relaxed group-hover:text-neutral-900 dark:group-hover:text-white/90 transition-colors duration-300 line-clamp-2">
+            {project.description}
+          </p>
+
+          {/* Tech stack */}
+          <div className="flex flex-wrap gap-1.5 pt-1">
+            {project.techStack.map((tech) => (
+              <Badge
+                key={tech}
+                variant="secondary"
+                className="bg-neutral-100 dark:bg-white/10 text-neutral-900 dark:text-white/90 hover:bg-primary/10 dark:hover:bg-primary/20 
+                  transition-all duration-300 text-[10px] px-1.5 py-0.5 hover:scale-105"
+              >
+                {tech}
+              </Badge>
+            ))}
           </div>
         </div>
       </div>
+
+      {/* Hover effect border */}
+      <div className="absolute inset-0 border border-primary/0 group-hover:border-primary/30 
+        rounded-xl transition-colors duration-500"></div>
     </div>
   );
 };

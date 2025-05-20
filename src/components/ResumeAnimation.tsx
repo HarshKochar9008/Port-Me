@@ -133,9 +133,6 @@ export default function ResumeAnimation({
   return (
     <div id={id} className={`${className} group relative`}>
       <div className="absolute inset-0 flex items-center justify-center opacity-0 group-hover:opacity-100 transition-opacity duration-300 z-10 pointer-events-none">
-        <span className="resume-hover-text text-primary font-medium text-lg sm:text-xl bg-background/80 backdrop-blur-sm px-4 py-2 rounded-lg">
-          Click to view resume
-        </span>
       </div>
       <iframe
         ref={iframeRef}
