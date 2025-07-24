@@ -249,6 +249,9 @@ h1 {
 section {
     margin-top: 8rem;
     /* height: 100vh; */
+    margin-bottom: 3rem;
+    padding-top: 0 !important;
+    padding-bottom: 0 !important;
 }
 /* inside section we create h2 and h5 tags */
 section > h2, section > h5 {

@@ -3,31 +3,20 @@ import { ExternalLink, Github } from "lucide-react";
 import { Button } from "@/components/ui/button";
 import { Badge } from "@/components/ui/badge";
 import { useState, useRef, useEffect } from "react";
-
-export interface Project {
-  id: string;
-  title: string;
-  description: string;
-  image: string;
-  demoUrl: string;
-  githubUrl: string;
-  techStack: string[];
-}
+import { Project } from "@/types";
 
 export const projects: Project[] = [
   {
     id: "project-1",
-    title: "Twitter AI Agent",
-    description: "A full-featured e-commerce platform with product catalog, shopping cart, and secure checkout.",
-    image: "https://images.unsplash.com/photo-1486312338219-ce68d2c6f44d",
-    demoUrl: "https://example.com/demo1",
+    title: "Twitter AI Agent ",
+    image: "https://i.ibb.co/ZR2hPSwK/image.png",
+    demoUrl: "https://twitter-ai-agent.vercel.app/",
     githubUrl: "https://github.com/username/ecommerce",
-    techStack: ["React", "Node.js", "Express", "MongoDB", "Stripe API"]
+    techStack: ["Twitter API", "OpenAI API", "TypeScript", "Eliza AI"]
   },
   {
     id: "project-2",
     title: "Crud Application",
-    description: "A collaborative task management application with real-time updates and team sharing capabilities.",
     image: "https://images.unsplash.com/photo-1488590528505-98d2b5aba04b",
     demoUrl: "https://example.com/demo2",
     githubUrl: "https://github.com/username/taskapp",
@@ -35,17 +24,15 @@ export const projects: Project[] = [
   },
   {
     id: "project-3",
-    title: "E-Commerce Platform",
-    description: "An interactive dashboard visualizing financial data with advanced filtering and reporting features.",
-    image: "https://images.unsplash.com/photo-1518770660439-4636190af475",
-    demoUrl: "https://example.com/demo3",
+    title: "PizzaBoi (E-Commerce)",
+    image: "https://i.ibb.co/Rp1KD3bj/Screenshot-2025-07-24-232542.png",
+    demoUrl: "https://pizza-boi.vercel.app/",
     githubUrl: "https://github.com/username/finance-dashboard",
     techStack: ["React", "TypeScript", "Express", "PostgreSQL"]
   },
   {
     id: "project-4",
     title: "AI Government Chatbot",
-    description: "A machine learning-powered tool that generates custom content based on user preferences.",
     image: "https://images.unsplash.com/photo-1461749280684-dccba630e2f6",
     demoUrl: "https://example.com/demo4",
     githubUrl: "https://github.com/username/ai-content",
@@ -168,10 +155,6 @@ const ProjectCard = ({ project, index }: ProjectCardProps) => {
               </Button>
             </div>
           </div>
-
-          <p className="text-neutral-700 dark:text-white/70 text-xs leading-relaxed group-hover:text-neutral-900 dark:group-hover:text-white/90 transition-colors duration-300 line-clamp-2">
-            {project.description}
-          </p>
 
           {/* Tech stack */}
           <div className="flex flex-wrap gap-1.5 pt-1">

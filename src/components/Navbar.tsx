@@ -1,21 +1,16 @@
 import { useState, useEffect } from 'react';
 import { Button } from "@/components/ui/button";
-import { ThemeToggle } from "./ThemeToggle";
+import ThemeToggler from "@/components/ui/theme-toggle-button";
 import { useInView } from "@/lib/animations";
-import { Moon, Sun } from "lucide-react";
-import { useTheme } from "next-themes";
-import TrueFocus from "./TrueFocus";
 
 const Navbar = () => {
   const [scrolled, setScrolled] = useState(false);
   const [ref, isInView] = useInView();
-  const { theme, setTheme } = useTheme();
-  
+
   useEffect(() => {
     const handleScroll = () => {
       setScrolled(window.scrollY > 20);
     };
-    
     window.addEventListener('scroll', handleScroll);
     return () => window.removeEventListener('scroll', handleScroll);
   }, []);
@@ -24,7 +19,7 @@ const Navbar = () => {
     const element = document.getElementById(id);
     element?.scrollIntoView({ behavior: 'smooth' });
   };
-  
+
   return (
     <header className={`fixed top-0 left-0 right-0 z-50 transition-all duration-300 ${
       scrolled 
@@ -37,19 +32,10 @@ const Navbar = () => {
             href="#hero" 
             className="text-xl font-medium text-primary transition-colors hover:text-primary/80"
           >
-            <div className="navbar">
-              <TrueFocus 
-                sentence="Harsh Kochar"
-                manualMode={true}
-                blurAmount={5}
-                borderColor="hsl(var(--primary))"
-                animationDuration={0.6}
-                pauseBetweenAnimations={0.5}
-              />
+            <div className="w-11 h-11 bg-gradient-to-br from-blue-600 via-blue-900 to-blue-500 flex items-center justify-center rounded-[10px] shadow-lg">
+              <img src="/Logo.png" alt="Logo" className="h-13 w-11" />
             </div>
-            
           </a>
-          
           <ul className="hidden md:flex items-center space-x-8">
             {['projects', 'skills', 'contact'].map((item) => (
               <li key={item}>
@@ -62,18 +48,8 @@ const Navbar = () => {
               </li>
             ))}
           </ul>
-          
           <div className="flex items-center gap-4">
-            <Button
-              variant="ghost"
-              size="icon"
-              onClick={() => setTheme(theme === "dark" ? "light" : "dark")}
-              className="text-muted-foreground hover:text-foreground"
-            >
-              <Sun className="h-5 w-5 rotate-0 scale-100 transition-all dark:-rotate-90 dark:scale-0" />
-              <Moon className="absolute h-5 w-5 rotate-90 scale-0 transition-all dark:rotate-0 dark:scale-100" />
-              <span className="sr-only">Toggle theme</span>
-            </Button>
+            <ThemeToggler />
             <Button 
               onClick={() => handleNavClick('contact')}
               className="bg-primary text-primary-foreground rounded-md hover:bg-primary/90 transition"
@@ -87,7 +63,7 @@ const Navbar = () => {
   );
 };
 
-export default Navbar;
+export default Navbar;    
 
 
 // import React from "react";
