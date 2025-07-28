@@ -56,7 +56,7 @@ const Hero = () => {
           </span>
           
           <p className="text-3xl sm:text-4xl md:text-5xl lg:text-6xl font-bold mb-4 sm:mb-6 animate-fade-in animation-delay-100 leading-tight">
-          Hey, I’m <span className="text-primary">Harsh</span>. I design cool stuff and love solving problems.
+          Hey, I’m <span className="text-primary">Harsh</span>.  I build ideas into digital realities..
           </p>
           
           <p className="text-base sm:text-lg md:text-xl text-muted-foreground mb-8 sm:mb-10 animate-fade-in animation-delay-200 max-w-xl">

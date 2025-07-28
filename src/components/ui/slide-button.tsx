@@ -25,8 +25,8 @@ const DRAG_CONSTRAINTS = { left: 0, right: 155 }
 const DRAG_THRESHOLD = 0.9
 
 const BUTTON_STATES = {
-  initial: { width: "12rem" },
-  completed: { width: "8rem" },
+  initial: { width: "11rem"  ,height: "2.5rem" },
+  completed: { width: "10rem" },
 }
 
 const ANIMATION_CONFIG = {
@@ -138,7 +138,7 @@ const SlideButton = forwardRef<HTMLButtonElement, ButtonProps>(
         transition={ANIMATION_CONFIG.spring}
         className="shadow-button-inset dark:shadow-button-inset-dark absolute left-1/2 -translate-x-1/2 flex h-9 items-center justify-center rounded-full bg-gray-200"
       >
-        <p className="text-sm text-gray-900 font-semibold">Slide to see more</p>
+        <p className="text-sm mx-2 text-gray-900 py-10 font-semibold">Slide to see more</p>
         {!completed && (
           <motion.div
             style={{
@@ -159,7 +159,7 @@ const SlideButton = forwardRef<HTMLButtonElement, ButtonProps>(
               onDragEnd={handleDragEnd}
               onDrag={handleDrag}
               style={{ x: springX }}
-              className="absolute -left-2 z-10 flex cursor-grab items-center justify-start active:cursor-grabbing"
+              className="absolute -left-1 z-10 flex cursor-grab items-center justify-start active:cursor-grabbing"
             >
               <Button
                 ref={ref}

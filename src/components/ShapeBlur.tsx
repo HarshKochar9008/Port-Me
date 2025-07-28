@@ -1,5 +1,6 @@
 import { useRef, useEffect, useState } from 'react';
 import * as THREE from 'three';
+import { useTheme } from 'next-themes';
 
 const vertexShader = /* glsl */`
   varying vec2 v_texcoord;
@@ -21,6 +22,7 @@ const fragmentShader = /* glsl */`
   uniform float u_borderSize;
   uniform float u_circleSize;
   uniform float u_circleEdge;
+  uniform vec3 u_color;
 
   #ifndef PI
   #define PI 3.1415926535897932384626433832795
@@ -119,8 +121,12 @@ const fragmentShader = /* glsl */`
           sdf = fill(sdf, 0.05, sdfCircle) * 1.4;
       }
       
-      vec3 color = vec3(sdf);
+      vec3 color = u_color * sdf;
       float alpha = step(0.01, sdf);
+      // Increase opacity for dark blue in light theme
+      #ifdef LIGHT_THEME
+        alpha *= 0.8;
+      #endif
       gl_FragColor = vec4(color.rgb, alpha);
   }
 `;
@@ -147,7 +153,10 @@ const ShapeBlur = ({
   circleEdge = 0.5
 }: ShapeBlurProps) => {
   const mountRef = useRef<HTMLDivElement>(null);
-   const [isInView, setIsInView] = useState (true)
+  const { theme } = useTheme();
+  const [isInView, setIsInView] = useState(true);
+
+  const color = theme === 'light' ? [0.0, 0.06, 0.15] : [1.0, 1.0, 1.0];
 
   useEffect(() => {
     if (!mountRef.current) return;
@@ -182,7 +191,8 @@ const ShapeBlur = ({
         u_roundness: { value: roundness },
         u_borderSize: { value: borderSize },
         u_circleSize: { value: circleSize },
-        u_circleEdge: { value: circleEdge }
+        u_circleEdge: { value: circleEdge },
+        u_color: { value: new THREE.Color(...color) }
       },
       defines: { VAR: variation },
       transparent: true
@@ -257,7 +267,8 @@ const ShapeBlur = ({
     roundness,
     borderSize,
     circleSize,
-    circleEdge
+    circleEdge,
+    theme // re-run effect when theme changes
   ]);
 
   return <div className={className} ref={mountRef} style={{ width: '100%', height: '100%' }} />;

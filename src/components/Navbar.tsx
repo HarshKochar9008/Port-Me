@@ -1,6 +1,6 @@
 import { useState, useEffect } from 'react';
 import { Button } from "@/components/ui/button";
-import ThemeToggler from "@/components/ui/theme-toggle-button";
+import ThemeToggleButton from "@/components/ui/theme-toggle-button";
 import { useInView } from "@/lib/animations";
 
 const Navbar = () => {
@@ -49,7 +49,7 @@ const Navbar = () => {
             ))}
           </ul>
           <div className="flex items-center gap-4">
-            <ThemeToggler />
+            <ThemeToggleButton />
             <Button 
               onClick={() => handleNavClick('contact')}
               className="bg-primary text-primary-foreground rounded-md hover:bg-primary/90 transition"
@@ -64,8 +64,6 @@ const Navbar = () => {
 };
 
 export default Navbar;    
-
-
 // import React from "react";
 // import "./Nav.css";
 // import { useState } from "react";
@@ -109,3 +107,5 @@ export default Navbar;
 // };
 
 // export default Nav;
+
+

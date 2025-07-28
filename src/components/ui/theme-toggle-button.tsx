@@ -5,16 +5,16 @@ import { useTheme } from "next-themes";
 import { Button } from "@/components/ui/button";
 import React from "react";
 
-type ThemeTogglerProps = {
-  variant?: "circle" | "circle-blur" | "gif";
+interface ThemeTogglerProps {
+  variant?: "circle" | "circle-blur" | "gif" | "polygon";
   start?: string;
   url?: string;
   showLabel?: boolean;
-};
+}
 
 export default function ThemeToggler({
   variant = "circle-blur",
-  start = "top-right",
+  start = "top-left",
   url = "",
   showLabel = false,
 }: ThemeTogglerProps) {
