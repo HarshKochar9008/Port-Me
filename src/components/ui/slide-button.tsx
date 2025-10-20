@@ -21,12 +21,12 @@ import { Check, Loader2, SendHorizontal, X } from "lucide-react"
 import { cn } from "@/lib/utils"
 import { Button, ButtonProps } from "@/components/ui/button"
 
-const DRAG_CONSTRAINTS = { left: 0, right: 155 }
+const DRAG_CONSTRAINTS = { left: 0, right: 140 }
 const DRAG_THRESHOLD = 0.9
 
 const BUTTON_STATES = {
-  initial: { width: "11rem"  ,height: "2.5rem" },
-  completed: { width: "10rem" },
+  initial: { width: "12rem", height: "2.5rem" },
+  completed: { width: "10rem", height: "2.5rem" },
 }
 
 const ANIMATION_CONFIG = {
@@ -83,8 +83,9 @@ const useButtonStatus = (resolveTo: "success" | "error") => {
 
 const SlideButton = forwardRef<HTMLButtonElement, ButtonProps>(
   ({ className, ...props }, ref) => {
-    const [isDragging, setIsDragging] = useState(false)
-    const [completed, setCompleted] = useState(false)
+  const [isDragging, setIsDragging] = useState(false)
+  const [completed, setCompleted] = useState(false)
+  const [hasStartedDragging, setHasStartedDragging] = useState(false)
     const dragHandleRef = useRef<HTMLDivElement | null>(null)
     const { status, handleSubmit } = useButtonStatus("success")
 
@@ -106,6 +107,7 @@ const SlideButton = forwardRef<HTMLButtonElement, ButtonProps>(
     const handleDragStart = useCallback(() => {
       if (completed) return
       setIsDragging(true)
+      setHasStartedDragging(true)
     }, [completed])
 
     const handleDragEnd = () => {
@@ -118,6 +120,7 @@ const SlideButton = forwardRef<HTMLButtonElement, ButtonProps>(
         handleSubmit()
       } else {
         dragX.set(0)
+        setHasStartedDragging(false)
       }
     }
 
@@ -136,15 +139,21 @@ const SlideButton = forwardRef<HTMLButtonElement, ButtonProps>(
       <motion.div
         animate={completed ? BUTTON_STATES.completed : BUTTON_STATES.initial}
         transition={ANIMATION_CONFIG.spring}
-        className="shadow-button-inset dark:shadow-button-inset-dark absolute left-1/2 -translate-x-1/2 flex h-9 items-center justify-center rounded-full bg-gray-200"
+        className="absolute left-1/2 -translate-x-1/2 flex h-10 items-center justify-center rounded-full bg-gray-200 dark:bg-gray-700 shadow-lg border border-gray-300 dark:border-gray-600"
       >
-        <p className="text-sm mx-2 text-gray-900 py-10 font-semibold">Slide to see more</p>
-        {!completed && (
+        <p className="text-sm mx-4 text-gray-900 dark:text-gray-100 font-semibold">Slide to see more</p>
+        {!completed && hasStartedDragging && (
           <motion.div
             style={{
               width: adjustedWidth,
             }}
-            className="absolute inset-y-0 left-0 z-0 rounded-full bg-accent"
+            className="absolute inset-y-0 left-0 z-0 rounded-full bg-blue-500 dark:bg-blue-400"
+            initial={{ width: 0, opacity: 0 }}
+            animate={{ 
+              width: adjustedWidth.get(), 
+              opacity: 1 
+            }}
+            transition={{ duration: 0.2 }}
           />
         )}
         <AnimatePresence key={crypto.randomUUID()}>
@@ -159,7 +168,7 @@ const SlideButton = forwardRef<HTMLButtonElement, ButtonProps>(
               onDragEnd={handleDragEnd}
               onDrag={handleDrag}
               style={{ x: springX }}
-              className="absolute -left-1 z-10 flex cursor-grab items-center justify-start active:cursor-grabbing"
+              className="absolute -left-0.5 z-10 flex cursor-grab items-center justify-start active:cursor-grabbing"
             >
               <Button
                 ref={ref}
@@ -167,7 +176,7 @@ const SlideButton = forwardRef<HTMLButtonElement, ButtonProps>(
                 {...props}
                 size="icon"
                 className={cn(
-                  "shadow-button rounded-full drop-shadow-xl",
+                  "rounded-full shadow-lg border-2 border-white dark:border-gray-200 bg-blue-500 hover:bg-blue-600 dark:bg-blue-400 dark:hover:bg-blue-500 text-white",
                   isDragging && "scale-105 transition-transform",
                   className
                 )}
@@ -191,7 +200,7 @@ const SlideButton = forwardRef<HTMLButtonElement, ButtonProps>(
                 disabled={status === "loading"}
                 {...props}
                 className={cn(
-                  "size-full rounded-full transition-all duration-300",
+                  "size-full rounded-full transition-all duration-300 bg-blue-500 hover:bg-blue-600 dark:bg-blue-400 dark:hover:bg-blue-500 text-white",
                   className
                 )}
               >

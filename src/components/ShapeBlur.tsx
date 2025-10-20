@@ -123,10 +123,8 @@ const fragmentShader = /* glsl */`
       
       vec3 color = u_color * sdf;
       float alpha = step(0.01, sdf);
-      // Increase opacity for dark blue in light theme
-      #ifdef LIGHT_THEME
-        alpha *= 0.8;
-      #endif
+      // Reduce opacity for grey color
+      alpha *= 0.3;
       gl_FragColor = vec4(color.rgb, alpha);
   }
 `;
@@ -156,7 +154,7 @@ const ShapeBlur = ({
   const { theme } = useTheme();
   const [isInView, setIsInView] = useState(true);
 
-  const color = theme === 'light' ? [0.0, 0.06, 0.15] : [1.0, 1.0, 1.0];
+  const color = theme === 'light' ? [0.5, 0.5, 0.5] : [0.3, 0.3, 0.3];
 
   useEffect(() => {
     if (!mountRef.current) return;

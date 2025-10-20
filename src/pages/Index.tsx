@@ -7,11 +7,12 @@ import Footer from "@/components/Footer";
 import { ThemeProvider } from "@/components/ThemeProvider";
 import ResumeAnimation from "@/components/ResumeAnimation";
 import ClickSpark from "../../components/ClickSpark";
+import { ScrollAnimation } from "@/components/ScrollAnimation";
 
 const Index = () => {
   return (
     <ThemeProvider attribute="class" defaultTheme="system" enableSystem>
-      <div className="min-h-screen bg-background text-foreground pb-16 sm:pb-0">
+      <div className="relative min-h-screen bg-background text-foreground pb-16 sm:pb-0">
         <Navbar />
         <ClickSpark
           sparkColor='#878787'
@@ -42,6 +43,9 @@ const Index = () => {
             </section>
             <section id="skills">
               <Skills />
+            </section>
+            <section id="scroll-animation">
+              <ScrollAnimation />
             </section>
             <section id="contact">
               <Contact />
