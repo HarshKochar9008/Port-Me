@@ -16,27 +16,13 @@ const fragmentShader = /* glsl */`
   uniform vec2 u_mouse;
   uniform vec2 u_resolution;
   uniform float u_pixelRatio;
-
   uniform float u_shapeSize;
+  uniform float u_shapeWidth;
+  uniform float u_shapeHeight;
   uniform float u_roundness;
   uniform float u_borderSize;
-  uniform float u_circleSize;
-  uniform float u_circleEdge;
   uniform vec3 u_color;
 
-  #ifndef PI
-  #define PI 3.1415926535897932384626433832795
-  #endif
-  #ifndef TWO_PI
-  #define TWO_PI 6.2831853071795864769252867665590
-  #endif
-
-  #ifndef VAR
-  #define VAR 0
-  #endif
-
-  #ifndef FNC_COORD
-  #define FNC_COORD
   vec2 coord(in vec2 p) {
       p = p / u_resolution.xy;
       if (u_resolution.x > u_resolution.y) {
@@ -50,37 +36,26 @@ const fragmentShader = /* glsl */`
       p *= vec2(-1.0, 1.0);
       return p;
   }
-  #endif
 
   #define st0 coord(gl_FragCoord.xy)
   #define mx coord(u_mouse * u_pixelRatio)
+
+  float sdRectangle(vec2 p, vec2 b) {
+      vec2 d = abs(p - 0.5) * 4.2 - b;
+      return min(max(d.x, d.y), 0.0) + length(max(d, 0.0));
+  }
 
   float sdRoundRect(vec2 p, vec2 b, float r) {
       vec2 d = abs(p - 0.5) * 4.2 - b + vec2(r);
       return min(max(d.x, d.y), 0.0) + length(max(d, 0.0)) - r;
   }
+
   float sdCircle(in vec2 st, in vec2 center) {
       return length(st - center) * 2.0;
   }
-  float sdPoly(in vec2 p, in float w, in int sides) {
-      float a = atan(p.x, p.y) + PI;
-      float r = TWO_PI / float(sides);
-      float d = cos(floor(0.5 + a / r) * r - a) * length(max(abs(p) * 1.0, 0.0));
-      return d * 2.0 - w;
-  }
 
-  float aastep(float threshold, float value) {
-      float afwidth = length(vec2(dFdx(value), dFdy(value))) * 0.70710678118654757;
-      return smoothstep(threshold - afwidth, threshold + afwidth, value);
-  }
-  float fill(in float x) { return 1.0 - aastep(0.0, x); }
   float fill(float x, float size, float edge) {
       return 1.0 - smoothstep(size - edge, size + edge, x);
-  }
-  float stroke(in float d, in float t) { return (1.0 - aastep(t, abs(d))); }
-  float stroke(float x, float size, float w, float edge) {
-      float d = smoothstep(size - edge, size + edge, x + w * 0.5) - smoothstep(size - edge, size + edge, x - w * 0.5);
-      return clamp(d, 0.0, 1.0);
   }
 
   float strokeAA(float x, float size, float w, float edge) {
@@ -95,31 +70,19 @@ const fragmentShader = /* glsl */`
       vec2 posMouse = mx * vec2(1., -1.) + 0.5;
       
       float size = u_shapeSize;
+      float width = u_shapeWidth;
+      float height = u_shapeHeight;
       float roundness = u_roundness;
       float borderSize = u_borderSize;
-      float circleSize = u_circleSize;
-      float circleEdge = u_circleEdge;
       
       float sdfCircle = fill(
           sdCircle(st, posMouse),
-          circleSize,
-          circleEdge
+          0.5,
+          1.0
       );
       
-      float sdf;
-      if (VAR == 0) {
-          sdf = sdRoundRect(st, vec2(size), roundness);
-          sdf = strokeAA(sdf, 0.0, borderSize, sdfCircle) * 4.0;
-      } else if (VAR == 1) {
-          sdf = sdCircle(st, vec2(0.5));
-          sdf = fill(sdf, 0.6, sdfCircle) * 1.2;
-      } else if (VAR == 2) {
-          sdf = sdCircle(st, vec2(0.5));
-          sdf = strokeAA(sdf, 0.58, 0.02, sdfCircle) * 4.0;
-      } else if (VAR == 3) {
-          sdf = sdPoly(st - vec2(0.5, 0.45), 0.3, 3);
-          sdf = fill(sdf, 0.05, sdfCircle) * 1.4;
-      }
+      float sdf = sdRoundRect(st, vec2(size * width, size * height), roundness);
+      sdf = strokeAA(sdf, 0.0, borderSize, sdfCircle) * 4.0;
       
       vec3 color = u_color * sdf;
       float alpha = step(0.01, sdf);
@@ -131,28 +94,25 @@ const fragmentShader = /* glsl */`
 
 interface ShapeBlurProps {
   className?: string;
-  variation?: number;
   pixelRatioProp?: number;
   shapeSize?: number;
+  shapeWidth?: number;
+  shapeHeight?: number;
   roundness?: number;
   borderSize?: number;
-  circleSize?: number;
-  circleEdge?: number;
 }
 
 const ShapeBlur = ({
   className = '',
-  variation = 0,
   pixelRatioProp = 2,
-  shapeSize = 1.2,
-  roundness = 0.4,
-  borderSize = 0.05,
-  circleSize = 0.3,
-  circleEdge = 0.5
+  shapeSize = 0.5,
+  shapeWidth = 2.5,
+  shapeHeight = 0.8,
+  roundness = 0.3,
+  borderSize = 0.05
 }: ShapeBlurProps) => {
   const mountRef = useRef<HTMLDivElement>(null);
   const { theme } = useTheme();
-  const [isInView, setIsInView] = useState(true);
 
   const color = theme === 'light' ? [0.5, 0.5, 0.5] : [0.3, 0.3, 0.3];
 
@@ -186,13 +146,12 @@ const ShapeBlur = ({
         u_resolution: { value: vResolution },
         u_pixelRatio: { value: pixelRatioProp },
         u_shapeSize: { value: shapeSize },
+        u_shapeWidth: { value: shapeWidth },
+        u_shapeHeight: { value: shapeHeight },
         u_roundness: { value: roundness },
         u_borderSize: { value: borderSize },
-        u_circleSize: { value: circleSize },
-        u_circleEdge: { value: circleEdge },
         u_color: { value: new THREE.Color(...color) }
       },
-      defines: { VAR: variation },
       transparent: true
     });
 
@@ -259,17 +218,16 @@ const ShapeBlur = ({
       renderer.dispose();
     };
   }, [
-    variation,
     pixelRatioProp,
     shapeSize,
+    shapeWidth,
+    shapeHeight,
     roundness,
     borderSize,
-    circleSize,
-    circleEdge,
-    theme // re-run effect when theme changes
+    theme
   ]);
 
   return <div className={className} ref={mountRef} style={{ width: '100%', height: '100%' }} />;
 };
 
-export default ShapeBlur; 
+export default ShapeBlur;
