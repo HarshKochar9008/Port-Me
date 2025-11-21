@@ -49,13 +49,21 @@ const Navbar = () => {
             ))}
           </ul>
           <div className="flex items-center gap-4">
-            {/* <ThemeToggleButton /> */}
-            <Button 
-              onClick={() => handleNavClick('contact')}
-              className="hidden sm:inline-flex bg-primary text-primary-foreground rounded-md hover:bg-primary/90 transition"
-            >
-              Get in touch
-            </Button>
+            {/* Show Theme Toggle and Get in Touch button responsively */}
+            <div className="flex items-center">
+              {/* Show the theme toggle button on all views if needed */}
+              {/* <ThemeToggleButton /> */}
+
+              {/* Desktop: show as button. Mobile: show as icon button */}
+
+              <Button
+                onClick={() => handleNavClick('contact')}
+                className="inline-flex items-center justify-center h-10 bg-primary text-primary-foreground hover:bg-primary/90 px-4 py-2 rounded-md transition"
+                aria-label="Get in touch"
+              >
+                Get in touch
+              </Button>
+            </div>
           </div>
         </nav>
       </div>

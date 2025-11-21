@@ -64,13 +64,11 @@ const Hero = () => {
         <div className="absolute inset-0 bg-gradient-to-b from-transparent via-background/30 via-background/50 to-background/100"></div>
         
         <ShapeBlurContainer 
-          variation={0}
-          shapeSize={1.5}
-          roundness={1}
-          borderSize={0.05}
-          circleSize={0.5}
-          circleEdge={1}
-
+          shapeSize={isMobile ? 1.2 : 1.5}
+          shapeWidth={isMobile ? 1.65 : 2.05}
+          shapeHeight={isMobile ? 1.5 : 1}
+          roundness={isMobile ? 0.4 : 0.5}
+          borderSize={isMobile ? 0.025 : 0.02}
         />
 
         <div className="absolute top-1/3 -right-16 w-48 sm:w-96 h-48 sm:h-96 bg-primary/5 rounded-full filter blur-3xl animate-float"></div>
@@ -86,8 +84,8 @@ const Hero = () => {
           </span>
           
           <h1 className="text-3xl sm:text-4xl md:text-5xl lg:text-6xl font-bold mb-4 sm:mb-6 animate-fade-in animation-delay-100 leading-tight">
-            <div className="whitespace-nowrap mb-4">Hey, I'm <span className="text-primary italic">Harsh</span></div>
-            <div className="whitespace-nowrap text-5xl">I turn imagination into interaction...</div>
+            <div className="mb-4">Hey, I'm <span className="text-primary italic text-effect-shadow">Harsh</span></div>
+            <div className="text-2xl sm:text-3xl md:text-5xl">I turn imagination into interaction...</div>
           </h1>
           
           <p className="text-base sm:text-lg md:text-xl text-muted-foreground mb-8 sm:mb-10 animate-fade-in animation-delay-200 max-w-xl">

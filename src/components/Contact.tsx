@@ -71,7 +71,7 @@ const Contact = () => {
   };
   
   return (
-    <section id="contact" className="bg-muted/50 dark:bg-transparent">
+    <section id="contact" className="bg-muted/50 dark:bg-transparent pb-12 md:pb-16">
       <div className="section-container" ref={ref}>
         <div className="text-center max-w-3xl mx-auto mb-16">
           <span className={`inline-block px-3 py-1 text-sm font-medium bg-primary/10 text-primary rounded-full mb-4 transition-all duration-500 ${
