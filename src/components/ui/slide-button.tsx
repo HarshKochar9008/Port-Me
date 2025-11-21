@@ -25,8 +25,8 @@ const DRAG_CONSTRAINTS = { left: 0, right: 140 }
 const DRAG_THRESHOLD = 0.9
 
 const BUTTON_STATES = {
-  initial: { width: "12rem", height: "2.5rem" },
-  completed: { width: "10rem", height: "2.5rem" },
+  initial: { width: "12rem", height: "3rem" },
+  completed: { width: "10rem", height: "3rem" },
 }
 
 const ANIMATION_CONFIG = {
@@ -139,9 +139,9 @@ const SlideButton = forwardRef<HTMLButtonElement, ButtonProps>(
       <motion.div
         animate={completed ? BUTTON_STATES.completed : BUTTON_STATES.initial}
         transition={ANIMATION_CONFIG.spring}
-        className="absolute left-1/2 -translate-x-1/2 flex h-10 items-center justify-center rounded-full bg-gray-200 dark:bg-gray-700 shadow-lg border border-gray-300 dark:border-gray-600"
+        className="relative left-1/2 -translate-x-1/2 w-full h-12 flex items-center justify-center rounded-full bg-gray-200 dark:bg-gray-700 shadow-lg border border-gray-300 dark:border-gray-600"
       >
-        <p className="text-sm mx-4 text-gray-900 dark:text-gray-100 font-semibold">Slide to see more</p>
+        <p className="text-sm ml-4 text-gray-900 dark:text-gray-100 font-semibold">Slide to see more</p>
         {!completed && hasStartedDragging && (
           <motion.div
             style={{
@@ -175,11 +175,7 @@ const SlideButton = forwardRef<HTMLButtonElement, ButtonProps>(
                 disabled={status === "loading"}
                 {...props}
                 size="icon"
-                className={cn(
-                  "rounded-full shadow-lg border-2 border-white dark:border-gray-200 bg-blue-500 hover:bg-blue-600 dark:bg-blue-400 dark:hover:bg-blue-500 text-white",
-                  isDragging && "scale-105 transition-transform",
-                  className
-                )}
+                className="rounded-full shadow-lg border-2 border-white dark:border-gray-200 bg-blue-500 hover:bg-blue-600 dark:bg-blue-400 dark:hover:bg-blue-500 text-white w-10 h-10 isDragging && scale-105 transition-transform"
               >
                 <SendHorizontal className="size-4" />
               </Button>

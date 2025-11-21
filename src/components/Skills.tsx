@@ -60,7 +60,7 @@ const Skills = () => {
         </span>
       </motion.div>
       {/* End rotated text */}
-      <section id="skills" className="relative overflow-hidden">
+      <section id="skills" className="relative overflow-hidden min-h-[auto] !h-auto py-12 sm:py-16">
         <div className="absolute inset-0 z-0">
           <Ribbons
             baseThickness={30}
@@ -71,12 +71,12 @@ const Skills = () => {
             enableShaderEffect={true}
           />
         </div>
-        <div className="section-container relative z-10 w-full" ref={ref}>
+        <div className="section-container relative z-10 w-full py-8" ref={ref}>
           <motion.div 
             initial={{ opacity: 0, y: 20 }}
             animate={isInView ? { opacity: 1, y: 0 } : { opacity: 0, y: 20 }}
             transition={{ duration: 0.5 }}
-            className="text-center max-w-3xl mx-auto mb-16"
+            className="text-center max-w-3xl mx-auto mb-12 sm:mb-16"
           >
             <div className="inline-block relative">
               <span className="absolute -inset-1 bg-gradient-to-r from-primary/10 to-primary/10 blur-lg"></span>
@@ -102,12 +102,8 @@ const Skills = () => {
             </motion.p>
           </motion.div>
           
-          <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-4 sm:gap-6 lg:gap-8 auto-rows-[minmax(180px,auto)]">
+          <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-4 sm:gap-6 lg:gap-8">
             {skills.map((skill, categoryIndex) => {
-              const delays = useStaggeredAnimation(skill.items.length);
-              const gridSpan = skill.size === "large" ? "lg:col-span-2 lg:row-span-2" : 
-                             skill.size === "medium" ? "lg:col-span-2" : "";
-              
               const colorClasses = {
                 primary: "from-white/60 to-white/30 dark:from-white/10 dark:to-white/5",
                 secondary: "from-white/60 to-white/30 dark:from-white/10 dark:to-white/5",
@@ -120,14 +116,14 @@ const Skills = () => {
                   initial={{ opacity: 0, y: 20 }}
                   animate={isInView ? { opacity: 1, y: 0 } : { opacity: 0, y: 20 }}
                   transition={{ duration: 0.5, delay: categoryIndex * 0.1 }}
-                  className={`relative ${gridSpan}`}
+                  className="relative"
                 >
-                  <div className={`bg-gradient-to-br ${colorClasses[skill.color || 'primary']} backdrop-blur-xl rounded-xl p-4 sm:p-6 border border-gray-300/60 dark:border-white/10 hover:border-gray-400/80 dark:hover:border-white/20 transition-all duration-300 h-full hover:scale-[1.02] shadow-xl dark:hover:shadow-[0_8px_30px_rgb(255,255,255,0.12)] before:absolute before:inset-0 before:bg-gradient-to-br before:from-gray-100/10 before:to-transparent dark:before:from-white/5 before:rounded-xl before:opacity-0 hover:before:opacity-100 before:transition-opacity before:duration-300`}>
-                    <h3 className="text-xl sm:text-2xl font-bold text-primary mb-4 sm:mb-6">
+                  <div className={`bg-gradient-to-br ${colorClasses[skill.color || 'primary']} backdrop-blur-xl rounded-xl p-5 sm:p-6 border border-gray-300/60 dark:border-white/10 hover:border-gray-400/80 dark:hover:border-white/20 transition-all duration-300 h-full min-h-[200px] flex flex-col hover:scale-[1.02] shadow-xl dark:hover:shadow-[0_8px_30px_rgb(255,255,255,0.12)] before:absolute before:inset-0 before:bg-gradient-to-br before:from-gray-100/10 before:to-transparent dark:before:from-white/5 before:rounded-xl before:opacity-0 hover:before:opacity-100 before:transition-opacity before:duration-300`}>
+                    <h3 className="text-lg sm:text-xl font-bold text-primary mb-4 sm:mb-5">
                       {skill.category}
                     </h3>
                     
-                    <ul className="space-y-3">
+                    <ul className="space-y-2.5 sm:space-y-3 flex-1">
                       {skill.items.map((item, itemIndex) => (
                         <motion.li 
                           key={item}
@@ -136,11 +132,11 @@ const Skills = () => {
                           transition={{ duration: 0.3, delay: categoryIndex * 0.1 + itemIndex * 0.05 }}
                           className="flex items-center group/item"
                         >
-                          <div className="relative">
+                          <div className="relative flex-shrink-0">
                             <div className="w-2 h-2 bg-primary rounded-full mr-3 group-hover/item:scale-150 transition-transform duration-300"></div>
                             <div className="absolute inset-0 bg-primary/20 rounded-full blur-sm group-hover/item:scale-150 transition-transform duration-300"></div>
                           </div>
-                          <span className="text-primary/80 group-hover/item:text-primary transition-colors duration-300">{item}</span>
+                          <span className="text-sm sm:text-base text-foreground/80 dark:text-foreground/90 group-hover/item:text-primary transition-colors duration-300">{item}</span>
                         </motion.li>
                       ))}
                     </ul>

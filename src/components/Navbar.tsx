@@ -49,10 +49,10 @@ const Navbar = () => {
             ))}
           </ul>
           <div className="flex items-center gap-4">
-            <ThemeToggleButton />
+            {/* <ThemeToggleButton /> */}
             <Button 
               onClick={() => handleNavClick('contact')}
-              className="bg-primary text-primary-foreground rounded-md hover:bg-primary/90 transition"
+              className="hidden sm:inline-flex bg-primary text-primary-foreground rounded-md hover:bg-primary/90 transition"
             >
               Get in touch
             </Button>

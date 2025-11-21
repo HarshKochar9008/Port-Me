@@ -68,7 +68,7 @@
 }
 
 .d-86-button-text {
-  color: var(--text-color);
+  color: var(--block-bg-color);
   letter-spacing: 3px;
   text-transform: uppercase;
   font-family: Oswald, sans-serif;
@@ -80,6 +80,11 @@
   align-items: center;
   position: absolute;
   inset: 0%;
+}
+.d-86-button-text:hover {
+  color: var(--dark-text-color);
+  transition: color 0.3s ease;
+  cursor: pointer;
 }
 
 /* Dark theme styles */
