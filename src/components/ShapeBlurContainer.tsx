@@ -3,22 +3,20 @@ import ShapeBlur from './ShapeBlur';
 
 interface ShapeBlurContainerProps {
   className?: string;
-  variation?: number;
   shapeSize?: number;
+  shapeWidth?: number;
+  shapeHeight?: number;
   roundness?: number;
   borderSize?: number;
-  circleSize?: number;
-  circleEdge?: number;
 }
 
 const ShapeBlurContainer = ({
   className = '',
-  variation = 0,
   shapeSize = 0.5,
-  roundness = 0.5,
-  borderSize = 0.05,
-  circleSize = 0.5,
-  circleEdge = 1
+  shapeWidth = 2.5,
+  shapeHeight = 0.8,
+  roundness = 0.3,
+  borderSize = 0.01
 }: ShapeBlurContainerProps) => {
   const [pixelRatio, setPixelRatio] = useState(1);
 
@@ -31,13 +29,12 @@ const ShapeBlurContainer = ({
   return (
     <div className={`absolute inset-0 w-full h-full z-0 overflow-hidden  ${className}`}>
       <ShapeBlur
-        variation={variation}
         pixelRatioProp={pixelRatio}
         shapeSize={shapeSize}
+        shapeWidth={shapeWidth}
+        shapeHeight={shapeHeight}
         roundness={roundness}
         borderSize={borderSize}
-        circleSize={circleSize}
-        circleEdge={circleEdge}
       />
     </div>
   );

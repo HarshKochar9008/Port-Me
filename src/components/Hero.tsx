@@ -39,7 +39,7 @@ const Hero = () => {
           loop
           muted
           playsInline
-          className="absolute top-0 left-0 right-0  inset-0 w-full h-full object-cover"
+          className="absolute opacity-70 top-0 left-0 right-0  inset-0 w-full h-full object-cover"
           ref={video => {
             if (video) {
               video.playbackRate = 2; // Doubles the speed of the video
@@ -52,13 +52,11 @@ const Hero = () => {
         <div className="absolute inset-0 bg-gradient-to-b from-transparent via-background/30 via-background/50 to-background/100"></div>
         
         <ShapeBlurContainer 
-          variation={0}
           shapeSize={1.5}
-          roundness={1}
-          borderSize={0.05}
-          circleSize={0.5}
-          circleEdge={1}
-
+          shapeWidth={2.05}
+          shapeHeight={1}
+          roundness={0.5}
+          borderSize={0.02}
         />
 
         <div className="absolute top-1/3 -right-16 w-48 sm:w-96 h-48 sm:h-96 bg-primary/5 rounded-full filter blur-3xl animate-float"></div>
@@ -74,7 +72,7 @@ const Hero = () => {
           </span>
           
           <h1 className="text-3xl sm:text-4xl md:text-5xl lg:text-6xl font-bold mb-4 sm:mb-6 animate-fade-in animation-delay-100 leading-tight">
-            <div className="whitespace-nowrap mb-4">Hey, I'm <span className="text-primary italic">Harsh</span></div>
+            <div className="whitespace-nowrap mb-4">Hey, I'm <span className="text-primary italic text-effect-shadow">Harsh</span></div>
             <div className="whitespace-nowrap text-5xl">I turn imagination into interaction...</div>
           </h1>
           
