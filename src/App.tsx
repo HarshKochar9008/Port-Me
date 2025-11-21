@@ -34,9 +34,11 @@ const App = () => {
           <Sonner />
           <BrowserRouter>
             <div className="relative min-h-screen">
-              <Dock 
-                items={items}
-              />
+              <div className="block md:hidden">
+                <Dock 
+                  items={items}
+                />
+            </div>
               <Routes>
                 <Route path="/" element={<Index />} />
                 {/* ADD ALL CUSTOM ROUTES ABOVE THE CATCH-ALL "*" ROUTE */}

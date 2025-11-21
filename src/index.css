@@ -93,7 +93,7 @@
 
   #hero {
     position: absolute;
-    top: -17vh;
+    top: -20vh;
     left: 0;
     right: 0;
     z-index: 1;
@@ -261,10 +261,21 @@ h1 {
 
 section {
     margin-top: 8rem;
-    height: 100vh;
+    height: 80vh;
     margin-bottom: 3rem;
     padding-top: 0 !important;
     padding-bottom: 0 !important;
+}
+
+section#skills {
+    height: auto !important;
+    min-height: auto !important;
+}
+
+section#projects {
+    height: auto !important;
+    min-height: auto !important;
+    padding-bottom: 2rem !important;
 }
 /* inside section we create h2 and h5 tags */
 section > h2, section > h5 {

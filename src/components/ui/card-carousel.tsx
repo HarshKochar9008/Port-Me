@@ -1,4 +1,4 @@
-import React from "react";
+import React, { useState } from "react";
 import { Swiper, SwiperSlide } from "swiper/react";
 import "swiper/css";
 import "swiper/css/effect-coverflow";
@@ -15,6 +15,7 @@ import { Badge } from "@/components/ui/badge";
 import { Button } from "@/components/ui/button";
 import { Project } from "@/types";
 import { SlideButton } from "./slide-button";
+import { motion } from "framer-motion";
 
 interface CarouselProps {
   projects: Project[];
@@ -29,18 +30,36 @@ const CardCarousel: React.FC<CarouselProps> = ({
   showPagination = true,
   showNavigation = true,
 }) => {
+  const [activeIndex, setActiveIndex] = useState(0);
+  const [hoveredCard, setHoveredCard] = useState<number | null>(null);
+
   const css = `
   .swiper {
     width: 100%;
-    padding-bottom: 50px;
+    padding-bottom: 80px;
+    padding-top: 20px;
+    overflow: visible;
+    min-height: 600px;
   }
   .swiper-slide {
     background-position: center;
     background-size: cover;
     width: 350px;
+    max-width: 90vw;
     display: flex;
     align-items: flex-end;
     justify-content: center;
+    transition: transform 0.3s ease;
+  }
+  @media (min-width: 640px) {
+    .swiper-slide {
+      width: 450px;
+    }
+  }
+  @media (min-width: 1024px) {
+    .swiper-slide {
+      width: 550px;
+    }
   }
   .swiper-3d .swiper-slide-shadow-left {
     background-image: none;
@@ -48,131 +67,209 @@ const CardCarousel: React.FC<CarouselProps> = ({
   .swiper-3d .swiper-slide-shadow-right{
     background: none;
   }
-  /* Make Swiper pagination dots pink */
+  .swiper-pagination {
+    bottom: 10px !important;
+  }
   .swiper-pagination-bullet {
-    background: gray !important;
+    background: rgba(156, 163, 175, 0.5) !important;
+    width: 10px !important;
+    height: 10px !important;
+    transition: all 0.3s ease !important;
   }
   .swiper-pagination-bullet-active {
-    background: blue !important;
+    background: hsl(var(--primary)) !important;
+    width: 24px !important;
+    border-radius: 5px !important;
   }
   `;
   return (
-    <section className="w-ace-y-4">
+    <section className="w-full">
       <style>{css}</style>
-      <div className="mx-auto w-full max-w-4xl rounded-[24px] border border-black/5 p-2 shadow-sm md:rounded-t-[44px]">
-        <div className="relative mx-auto flex w-full flex-col rounded-[24px] border border-black/5 bg-neutral-800/5 p-2 shadow-sm md:items-start md:gap-8 md:rounded-b-[20px] md:rounded-t-[40px] md:p-2">
-          <Badge
-            variant="outline"
-            className="absolute left-4 top-6 rounded-[14px] border border-black/10 text-base md:left-6"
-          >
-
-          </Badge>
-          <div className="flex flex-col justify-center pb-2 pl-4 pt-14 md:items-center">
-            <div className="flex gap-2">
-
-            </div>
-          </div>
-          <div className="flex w-full items-center justify-center gap-4">
-            <div className="w-full">
-              <Swiper
-                spaceBetween={50}
-                autoplay={{
-                  delay: autoplayDelay,
-                  disableOnInteraction: false,
-                }}
-                effect={"coverflow"}
-                grabCursor={true}
-                centeredSlides={true}
-                loop={true}
-                slidesPerView={"auto"}
-                coverflowEffect={{
-                  rotate: 0,
-                  stretch: 0,
-                  depth: 100,
-                  modifier: 2.5,
-                }}
-                pagination={showPagination}
-                navigation={
-                  showNavigation
-                    ? {
-                        nextEl: ".swiper-button-next",
-                        prevEl: ".swiper-button-prev",
-                      }
-                    : undefined
-                }
-                modules={[EffectCoverflow, Autoplay, Pagination, Navigation]}
-              >
-                {projects.map((project, index) => (
-                  <SwiperSlide key={project.id} style={{ position: 'relative' }}>
-                    <div
-                      className={`relative group overflow-hidden rounded-xl bg-gray-900 wmax-w-sm mx-auto`}
-                    >
-                      {/* Background gradient effect */}
-                      <div className="absolute inset-0 bg-gradient-to-br from-primary/5 via-transparent to-primary/5"></div>
-                      {/* Content container */}
-                      <div className="relative z-10 p-4">
-                        {/* Image section */}
-                        <div className="relative mb-4 rounded-lg overflow-hidden aspect-[16/9]">
-                          <div className="absolute inset-0 overflow-hidden">
-                            <img
+      <div className="mx-auto w-full max-w-7xl px-4 sm:px-6 lg:px-8">
+        <div className="relative w-full">
+          <div className="relative w-full overflow-hidden">
+            <Swiper
+              spaceBetween={30}
+              autoplay={{
+                delay: autoplayDelay,
+                disableOnInteraction: false,
+                pauseOnMouseEnter: true,
+              }}
+              effect={"coverflow"}
+              grabCursor={true}
+              centeredSlides={true}
+              loop={projects.length >= 3}
+              slidesPerView={"auto"}
+              onSlideChange={(swiper) => setActiveIndex(swiper.realIndex)}
+              coverflowEffect={{
+                rotate: 15,
+                stretch: 0,
+                depth: 200,
+                modifier: 1.5,
+                slideShadows: true,
+              }}
+              pagination={showPagination ? {
+                clickable: true,
+                dynamicBullets: true,
+              } : false}
+              navigation={showNavigation}
+              modules={[EffectCoverflow, Autoplay, Pagination, Navigation]}
+              className="!overflow-visible"
+            >
+                {projects.map((project, index) => {
+                  const isActive = activeIndex === index;
+                  const isHovered = hoveredCard === index;
+                  
+                  return (
+                    <SwiperSlide key={project.id} style={{ position: 'relative' }}>
+                      <motion.div
+                        initial={{ opacity: 0, y: 20 }}
+                        animate={{ 
+                          opacity: 1, 
+                          y: 0,
+                          scale: isActive ? 1.05 : 1,
+                        }}
+                        transition={{ duration: 0.3 }}
+                        onHoverStart={() => setHoveredCard(index)}
+                        onHoverEnd={() => setHoveredCard(null)}
+                        className={`relative group overflow-hidden rounded-2xl bg-card border border-border/50 backdrop-blur-sm max-w-xl mx-auto cursor-pointer ${
+                          isActive ? 'shadow-2xl shadow-primary/20' : 'shadow-lg'
+                        }`}
+                      >
+                        {/* Animated background gradient */}
+                        <motion.div 
+                          className="absolute inset-0 bg-gradient-to-br from-primary/10 via-transparent to-primary/5"
+                          animate={{
+                            opacity: isHovered ? 0.3 : 0.1,
+                          }}
+                          transition={{ duration: 0.3 }}
+                        />
+                        
+                        {/* Shine effect on hover */}
+                        <motion.div
+                          className="absolute inset-0 bg-gradient-to-r from-transparent via-white/10 to-transparent"
+                          initial={{ x: '-100%' }}
+                          animate={isHovered ? { x: '200%' } : { x: '-100%' }}
+                          transition={{ duration: 0.6, ease: 'easeInOut' }}
+                        />
+                        
+                        {/* Content container */}
+                        <div className="relative z-10 p-5 sm:p-6">
+                          {/* Image section with zoom effect */}
+                          <motion.div 
+                            className="relative mb-5 sm:mb-6 rounded-xl overflow-hidden aspect-[16/9] bg-muted"
+                            whileHover={{ scale: 1.02 }}
+                            transition={{ duration: 0.3 }}
+                          >
+                            <motion.img
                               src={project.image}
                               alt={project.title}
-                              className="w-full h-full object-cover transition-transform duration-300 ease-out"
+                              className="w-full h-full object-cover"
+                              animate={{
+                                scale: isHovered ? 1.1 : 1,
+                              }}
+                              transition={{ duration: 0.4, ease: 'easeOut' }}
                             />
-                          </div>
-                          <div className="absolute inset-0  dark:from-black/90 dark:via-black/30 dark:to-transparent opacity-0 group-hover:opacity-100 transition-opacity duration-500"></div>
-                        </div>
-                        <div className="space-y-3">
-                          <div className="flex items-start justify-between gap-2">
-                            <h3 className="text-lg font-bold text-neutral-900 dark:text-white group-hover:text-primary transition-colors duration-300">
-                              {project.title}
-                            </h3>
-                            <div className="flex gap-1">
-                              <Button
-                                asChild
-                                variant="ghost"
-                                size="icon"
-                                className="h-7 w-7 rounded-full bg-neutral-100 dark:bg-white/10 hover:bg-primary/10 dark:hover:bg-primary/20 transition-all duration-300 hover:scale-110"
+                            <div className="absolute inset-0 bg-gradient-to-t from-black/60 via-transparent to-transparent opacity-0 group-hover:opacity-100 transition-opacity duration-500" />
+                          </motion.div>
+                          
+                          <div className="space-y-4">
+                            {/* Title and icons */}
+                            <div className="flex items-start justify-between gap-3">
+                              <motion.h3 
+                                className="text-lg sm:text-xl font-bold text-foreground group-hover:text-primary transition-colors duration-300 flex-1"
+                                animate={{
+                                  x: isHovered ? 5 : 0,
+                                }}
+                                transition={{ duration: 0.2 }}
                               >
-                                <a href={project.githubUrl} target="_blank" rel="noopener noreferrer">
-                                  <Github size={14} className="text-neutral-900 dark:text-white" />
-                                </a>
-                              </Button>
-                              <Button
-                                asChild
-                                variant="ghost"
-                                size="icon"
-                                className="h-7 w-7 rounded-full bg-neutral-100 dark:bg-white/10 hover:bg-primary/10 dark:hover:bg-primary/20 transition-all duration-300 hover:scale-110"
-                              >
-                                <a href={project.demoUrl} target="_blank" rel="noopener noreferrer">
-                                  <ExternalLink size={14} className="text-neutral-900 dark:text-white" />
-                                </a>
-                              </Button>
+                                {project.title}
+                              </motion.h3>
+                              <div className="flex gap-2 flex-shrink-0">
+                                <motion.div
+                                  whileHover={{ scale: 1.1, rotate: 5 }}
+                                  whileTap={{ scale: 0.95 }}
+                                >
+                                  <Button
+                                    asChild
+                                    variant="ghost"
+                                    size="icon"
+                                    className="h-9 w-9 rounded-full bg-muted hover:bg-primary/10 transition-all duration-300"
+                                  >
+                                    <a href={project.githubUrl} target="_blank" rel="noopener noreferrer" aria-label="GitHub">
+                                      <Github size={16} className="text-foreground" />
+                                    </a>
+                                  </Button>
+                                </motion.div>
+                                <motion.div
+                                  whileHover={{ scale: 1.1, rotate: -5 }}
+                                  whileTap={{ scale: 0.95 }}
+                                >
+                                  <Button
+                                    asChild
+                                    variant="ghost"
+                                    size="icon"
+                                    className="h-9 w-9 rounded-full bg-muted hover:bg-primary/10 transition-all duration-300"
+                                  >
+                                    <a href={project.demoUrl} target="_blank" rel="noopener noreferrer" aria-label="Live Demo">
+                                      <ExternalLink size={16} className="text-foreground" />
+                                    </a>
+                                  </Button>
+                                </motion.div>
+                              </div>
+                            </div>
+                            
+                            {/* Tech stack badges with stagger animation */}
+                            <div className="flex flex-wrap gap-2">
+                              {project.techStack.map((tech, techIndex) => (
+                                <motion.div
+                                  key={tech}
+                                  initial={{ opacity: 0, scale: 0.8 }}
+                                  animate={{ 
+                                    opacity: isActive ? 1 : 0.7,
+                                    scale: 1,
+                                  }}
+                                  transition={{ 
+                                    delay: techIndex * 0.05,
+                                    duration: 0.2 
+                                  }}
+                                  whileHover={{ scale: 1.1, y: -2 }}
+                                >
+                                  <Badge
+                                    variant="secondary"
+                                    className="bg-muted text-foreground/80 hover:bg-primary/10 hover:text-primary transition-all duration-300 text-xs px-2.5 py-1 cursor-default"
+                                  >
+                                    {tech}
+                                  </Badge>
+                                </motion.div>
+                              ))}
                             </div>
                           </div>
-                          <div className="flex flex-wrap gap-1.5 pt-1">
-                            {project.techStack.map((tech) => (
-                              <Badge
-                                key={tech}
-                                variant="secondary"
-                                className="bg-neutral-100 dark:bg-white/10 text-neutral-900 dark:text-white/90 hover:bg-primary/10 dark:hover:bg-primary/20 transition-all duration-300 text-[10px] px-1.5 py-0.5 hover:scale-105"
-                              >
-                                {tech}
-                              </Badge>
-                            ))}
-                          </div>
                         </div>
-                      </div>
-                      {/* Hover effect border */}
-                      <div className="absolute inset-0 border border-primary/0 group-hover:border-primary/30 rounded-xl transition-colors duration-500"></div>
-                    </div>
-                  </SwiperSlide>
-                ))}
-                </Swiper>
-                <div className="flex justify-center mt-14">
-                    <SlideButton />
+                        
+                        {/* Animated border on hover */}
+                        <motion.div 
+                          className={`absolute inset-0 border-2 rounded-2xl pointer-events-none transition-colors duration-300 ${
+                            isHovered ? 'border-primary/30' : 'border-transparent'
+                          }`}
+                        />
+                      </motion.div>
+                    </SwiperSlide>
+                  );
+                })}
+              </Swiper>
+              
+              {/* Slide button with animation */}
+              <motion.div 
+                className="flex justify-center items-center mt-8 mb-4 min-h-[3rem]"
+                initial={{ opacity: 0, y: 10 }}
+                animate={{ opacity: 1, y: 0 }}
+                transition={{ delay: 0.5 }}
+              >
+                <div className="relative w-full max-w-[12rem] h-12">
+                  <SlideButton />
                 </div>
-            </div>
+              </motion.div>
           </div>
         </div>
       </div>
