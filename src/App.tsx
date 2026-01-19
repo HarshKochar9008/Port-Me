@@ -8,6 +8,7 @@ import NotFound from "./pages/NotFound";
 import Dock from "./components/Dock";
 import { VscHome, VscProject, VscTools, VscMail } from "react-icons/vsc";
 import { ThemeProvider } from "./components/ThemeProvider";
+import MobileDesktopNotice from "./components/MobileDesktopNotice";
 
 const queryClient = new QueryClient();
 
@@ -34,11 +35,12 @@ const App = () => {
           <Sonner />
           <BrowserRouter>
             <div className="relative min-h-screen">
+              <MobileDesktopNotice />
               <div className="block md:hidden">
                 <Dock 
                   items={items}
                 />
-            </div>
+              </div>
               <Routes>
                 <Route path="/" element={<Index />} />
                 {/* ADD ALL CUSTOM ROUTES ABOVE THE CATCH-ALL "*" ROUTE */}

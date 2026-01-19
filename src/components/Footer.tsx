@@ -20,12 +20,6 @@ const Footer = () => {
           </div>
           
           <div className="flex flex-col items-center justify-center gap-6 order-1 md:order-2">
-            <Button
-              onClick={handleScrollToContact}
-              className="w-full sm:w-auto inline-flex items-center justify-center h-10 bg-primary text-primary-foreground hover:bg-primary/90 px-6 py-2 rounded-md transition font-medium"
-            >
-              Send Message
-            </Button>
             
             <div className="flex items-center justify-center flex-row gap-x-6">
               <a 

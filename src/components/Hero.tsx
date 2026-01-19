@@ -65,8 +65,8 @@ const Hero = () => {
         
         <ShapeBlurContainer 
           shapeSize={isMobile ? 1.2 : 1.5}
-          shapeWidth={isMobile ? 1.65 : 2.05}
-          shapeHeight={isMobile ? 1.5 : 1}
+          shapeWidth={isMobile ? 1.65 : 1.85}
+          shapeHeight={isMobile ? 1.5 : 0.8}
           roundness={isMobile ? 0.4 : 0.5}
           borderSize={isMobile ? 0.025 : 0.02}
         />
