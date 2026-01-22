@@ -9,10 +9,22 @@ import Dock from "./components/Dock";
 import { VscHome, VscProject, VscTools, VscMail } from "react-icons/vsc";
 import { ThemeProvider } from "./components/ThemeProvider";
 import MobileDesktopNotice from "./components/MobileDesktopNotice";
+import AuraBackground from "./components/AuraBackground";
+import { useState, useEffect } from "react";
 
 const queryClient = new QueryClient();
 
 const App = () => {
+  const [isLoading, setIsLoading] = useState(true);
+
+  useEffect(() => {
+    const timer = setTimeout(() => {
+      setIsLoading(false);
+    }, 3000);
+
+    return () => clearTimeout(timer);
+  }, []);
+
   const scrollToSection = (sectionId: string) => {
     const element = document.getElementById(sectionId);
     if (element) {
@@ -33,6 +45,18 @@ const App = () => {
         <TooltipProvider>
           <Toaster />
           <Sonner />
+          <AuraBackground />
+          
+          {isLoading && (
+            <div className="fixed inset-0 z-[9999] flex items-center justify-center bg-black/40 backdrop-blur-sm">
+              <div className="logo-zoom-overlay">
+                <div className="w-40 h-40 flex items-center justify-center rounded-[30px] drop-shadow-2xl">
+                  <img src="/LogoDiv.png" alt="Logo" className="w-full h-full object-contain" />
+                </div>
+              </div>
+            </div>
+          )}
+
           <BrowserRouter>
             <div className="relative min-h-screen">
               <MobileDesktopNotice />
@@ -43,7 +67,6 @@ const App = () => {
               </div>
               <Routes>
                 <Route path="/" element={<Index />} />
-                {/* ADD ALL CUSTOM ROUTES ABOVE THE CATCH-ALL "*" ROUTE */}
                 <Route path="*" element={<NotFound />} />
               </Routes>
             </div>

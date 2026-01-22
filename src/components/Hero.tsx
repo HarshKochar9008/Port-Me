@@ -46,23 +46,7 @@ const Hero = () => {
       className="relative sm:absolute top-0 left-0 right-0 z-[1] flex flex-col justify-center overflow-hidden px-6 sm:px-6 pt-24 sm:pt-0 mt-0"
     >
       <div className="absolute inset-0 z-0 overflow-hidden">
-        <video
-          autoPlay
-          loop
-          muted
-          playsInline
-          className="absolute opacity-70 top-0 left-0 right-0  inset-0 w-full h-full object-cover"
-          ref={video => {
-            if (video) {
-              video.playbackRate = 2; // Doubles the speed of the video
-            }
-          }}
-        >
-          <source src="/loopbg.mp4" type="video/mp4" />
-        </video>
-        
-        <div className="absolute inset-0 bg-gradient-to-b from-transparent via-background/30 via-background/50 to-background/100"></div>
-        
+
         <ShapeBlurContainer 
           shapeSize={isMobile ? 1.2 : 1.5}
           shapeWidth={isMobile ? 1.65 : 1.85}

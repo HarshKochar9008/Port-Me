@@ -1,3 +1,5 @@
+@import url('https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600&display=swap');
+
 @tailwind base;
 @tailwind components;
 @tailwind utilities;
@@ -61,6 +63,7 @@
     @apply scroll-smooth;
     font-size: 16px;
     height: 100%;
+    background: #000000 !important;
   }
   
   @media (max-width: 640px) {
@@ -70,16 +73,19 @@
   }
   
   body {
-    @apply bg-background text-foreground antialiased;
+    @apply text-foreground antialiased;
+    font-family: 'Inter', 'Poppins', sans-serif;
     min-height: 100vh;
     overflow-x: hidden;
     width: 100%;
+    background: transparent !important;
   }
   
   #root {
     min-height: 100vh;
     width: 100%;
     overflow-x: hidden;
+    background: transparent !important;
   }
   
   h1, h2, h3, h4, h5, h6 {
@@ -237,14 +243,7 @@ html {
     display: none;
 }
 
-body {
-    font-family: 'Poppins', sans-serif;
-    /* here we are using all those variables using "var()" function */
-    color: var(--color-white);
-    line-height: 1.8;
-    /* "url()" function is used to insert image */
-    background-image: url(../src//image/backgroundImage.png);
-}
+/* Body styles moved to @layer base above - background removed for AuraBackground */
 /* styling */
 .container {
     width: var(--container-width-lg);
@@ -400,5 +399,53 @@ html, body {
     to {
       mask-size: 350vmax;
     }
+  }
+}
+
+/* Logo zoom animation */
+@keyframes logoZoom {
+  0% {
+    opacity: 0;
+    transform: scale(0.5);
+  }
+  50% {
+    opacity: 1;
+    transform: scale(1.1);
+  }
+  100% {
+    opacity: 1;
+    transform: scale(1);
+  }
+}
+
+@keyframes logoFadeOut {
+  0% {
+    opacity: 1;
+    transform: scale(1);
+  }
+  100% {
+    opacity: 0;
+    transform: scale(0.95);
+  }
+}
+
+.logo-zoom-overlay {
+  animation: logoZoom 1.5s cubic-bezier(0.34, 1.56, 0.64, 1) forwards,
+             logoFadeOut 1s ease-in-out 2s forwards;
+}
+
+.logo-zoom-animation {
+  animation: pulse 0.3s ease-in-out;
+}
+
+@keyframes pulse {
+  0% {
+    transform: scale(1);
+  }
+  50% {
+    transform: scale(0.9);
+  }
+  100% {
+    transform: scale(1);
   }
 }

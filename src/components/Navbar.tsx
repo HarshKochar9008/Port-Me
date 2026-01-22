@@ -21,18 +21,30 @@ const Navbar = () => {
   };
 
   return (
-    <header className={`fixed top-0 left-0 right-0 z-[50] transition-all duration-300 ${
+    <header className={`fixed top-5 left-0 right-0 z-[50] transition-all duration-500 ease-in-out ${
       scrolled 
-        ? 'py-3 bg-background/80 backdrop-blur-md shadow-sm border-b border-border/50' 
-        : 'py-5 bg-transparent'
+        ? 'py-3' 
+        : 'py-5'
     }`}>
-      <div className="container max-w-6xl mx-auto px-4 sm:px-6 lg:px-8">
-        <nav className="flex items-center justify-between">
+      <div className={`mx-auto px-4 sm:px-6 lg:px-8 transition-all duration-500 ease-in-out ${
+        scrolled 
+          ? 'max-w-5xl' 
+          : 'container max-w-6xl'
+      }`}>
+        <nav className={`flex items-center justify-between transition-all duration-500 ease-in-out ${
+          scrolled 
+            ? 'bg-background/70 backdrop-blur-xl shadow-lg border-2 border-white rounded-full px-6 py-3' 
+            : 'bg-transparent border-2 border-red px-6 py-3 rounded-full'
+        }`}>
           <a 
             href="#hero" 
-            className="text-xl font-medium text-primary transition-colors hover:text-primary/80"
+            onClick={(e) => {
+              e.preventDefault();
+              handleNavClick('home');
+            }}
+            className="text-xl font-medium text-primary transition-colors hover:text-primary/80 relative"
           >
-            <div className="w-11 h-11 bg-gradient-to-br from-blue-600 via-blue-900 to-blue-500 flex items-center justify-center rounded-[10px] shadow-lg">
+            <div className="w-11 h-11 bg-gradient-to-br from-blue-600 via-blue-900 to-blue-500 flex items-center justify-center rounded-[10px] shadow-lg transition-all duration-300 hover:scale-110">
               <img src="/Logo.png" alt="Logo" className="h-13 w-11" />
             </div>
           </a>
@@ -49,13 +61,7 @@ const Navbar = () => {
             ))}
           </ul>
           <div className="flex items-center gap-4">
-            {/* Show Theme Toggle and Get in Touch button responsively */}
             <div className="flex items-center">
-              {/* Show the theme toggle button on all views if needed */}
-              {/* <ThemeToggleButton /> */}
-
-              {/* Desktop: show as button. Mobile: show as icon button */}
-
               <Button
                 onClick={() => handleNavClick('contact')}
                 className="inline-flex items-center justify-center h-10 bg-primary text-primary-foreground hover:bg-primary/90 px-4 py-2 rounded-md transition"

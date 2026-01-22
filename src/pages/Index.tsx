@@ -11,7 +11,7 @@ import { ScrollAnimation } from "@/components/ScrollAnimation";
 
 const Index = () => {
   return (
-    <div className="relative min-h-screen bg-background text-foreground pb-24 sm:pb-0">
+    <div className="relative min-h-screen text-foreground pb-24 sm:pb-0 bg-transparent">
       <Navbar />
       <ClickSpark
         sparkColor='#878787'
