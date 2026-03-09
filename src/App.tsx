@@ -1,9 +1,9 @@
 import { Toaster } from "@/components/ui/toaster";
-import { Toaster as Sonner } from "@/components/ui/sonner";
 import { TooltipProvider } from "@/components/ui/tooltip";
 import { QueryClient, QueryClientProvider } from "@tanstack/react-query";
 import { BrowserRouter, Routes, Route } from "react-router-dom";
-import Index from "./pages/Index";
+import { lazy, Suspense } from "react";
+const Index = lazy(() => import("./pages/Index"));
 import NotFound from "./pages/NotFound";
 import Dock from "./components/Dock";
 import { VscHome, VscProject, VscTools, VscMail } from "react-icons/vsc";
@@ -11,6 +11,8 @@ import { ThemeProvider } from "./components/ThemeProvider";
 import MobileDesktopNotice from "./components/MobileDesktopNotice";
 import AuraBackground from "./components/AuraBackground";
 import { useState, useEffect } from "react";
+import { PortfolioVersionProvider } from "@/components/portfolio/portfolio-version";
+import PortfolioVersionToggle from "@/components/portfolio/PortfolioVersionToggle";
 
 const queryClient = new QueryClient();
 
@@ -44,8 +46,9 @@ const App = () => {
       <QueryClientProvider client={queryClient}>
         <TooltipProvider>
           <Toaster />
-          <Sonner />
-          <AuraBackground />
+          {/* <AuraBackground /> */}
+          <PortfolioVersionProvider>
+            <PortfolioVersionToggle />
           
           {isLoading && (
             <div className="fixed inset-0 z-[9999] flex items-center justify-center bg-black/40 backdrop-blur-sm">
@@ -57,7 +60,7 @@ const App = () => {
             </div>
           )}
 
-          <BrowserRouter>
+          <BrowserRouter future={{ v7_startTransition: true }}>
             <div className="relative min-h-screen">
               <MobileDesktopNotice />
               <div className="block md:hidden">
@@ -66,11 +69,12 @@ const App = () => {
                 />
               </div>
               <Routes>
-                <Route path="/" element={<Index />} />
+                <Route path="/" element={<Suspense fallback={<div className="min-h-screen flex items-center justify-center" />}><Index /></Suspense>} />
                 <Route path="*" element={<NotFound />} />
               </Routes>
             </div>
           </BrowserRouter>
+          </PortfolioVersionProvider>
         </TooltipProvider>
       </QueryClientProvider>
     </ThemeProvider>

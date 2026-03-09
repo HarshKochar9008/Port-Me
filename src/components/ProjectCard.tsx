@@ -8,36 +8,40 @@ import { Project } from "@/types";
 export const projects: Project[] = [
   {
     id: "project-1",
-    title: "Twitter AI Agent ",
-    image: "https://i.ibb.co/ZR2hPSwK/image.png",
-    demoUrl: "https://twitter-ai-agent.vercel.app/",
-    githubUrl: "https://github.com/username/ecommerce",
-    techStack: ["Twitter API", "OpenAI API", "TypeScript", "Eliza AI"]
+    title: "ChargeNchill ",
+    logo: "https://i.ibb.co/Rpvz0SDm/loading.png",
+    image: "https://i.ibb.co/LhC765Zs/Screenshot-2026-03-09-144104.png",
+    demoUrl: "https://www.chargenchill.eu/",
+    githubUrl: "https://github.com/HarshKochar9008/ChargeNchill",
+    techStack: ["JavaScript", "Tailwind CSS", "Node.js", "Figma"]
   },
   {
     id: "project-2",
-    title: "Crud Application",
-    image: "https://images.unsplash.com/photo-1488590528505-98d2b5aba04b",
-    demoUrl: "https://example.com/demo2",
-    githubUrl: "https://github.com/username/taskapp",
-    techStack: ["React", "Firebase", "Tailwind CSS", "React DnD"]
+    title: "Gossips get it done",
+    logo: "https://i.ibb.co/Fk6Rb8bP/gossipss.png",
+    image: "https://i.ibb.co/LzSMDMsc/Screenshot-2026-03-09-143641.png",
+    demoUrl: "https://gossipss.vercel.app/",
+    githubUrl: "https://github.com/HarshKochar9008/Gossips",
+    techStack: ["TypeScript", "Tailwind CSS", "Node.js", "Express , MongoDB"]
   },
   {
     id: "project-3",
-    title: "PizzaBoi (E-Commerce)",
-    image: "https://i.ibb.co/Rp1KD3bj/Screenshot-2025-07-24-232542.png",
-    demoUrl: "https://pizza-boi.vercel.app/",
-    githubUrl: "https://github.com/username/finance-dashboard",
-    techStack: ["React", "TypeScript", "Express", "PostgreSQL"]
+    title: "Wince Scheduler",
+    logo: "https://i.ibb.co/cSxfdXY2/Landing-Page.png",
+    image: "https://i.ibb.co/T9cJPjF/Screenshot-2026-03-09-144402.png",
+    demoUrl: "https://wince.vercel.app/",
+    githubUrl: "https://github.com/HarshKochar9008/WINCE",
+    techStack: ["React", "TypeScript", "Node.js", "Express", "PostgreSQL", "Tailwind CSS"]
   },
   {
     id: "project-4",
-    title: "AI Government Chatbot",
-    image: "https://images.unsplash.com/photo-1461749280684-dccba630e2f6",
-    demoUrl: "https://example.com/demo4",
-    githubUrl: "https://github.com/username/ai-content",
-    techStack: ["React", "Python", "TensorFlow", "Flask"]
-  }
+    title: "ApexFlow Token",
+    logo: "https://i.ibb.co/nsPxVCyj/aplo.png",
+    image: "https://i.ibb.co/Zbs2s7F/Screenshot-2026-03-09-152906.png",
+    demoUrl: "https://apexflowagent.com/",
+    githubUrl: "https://github.com/HarshKochar9008/ApexFlow_token",
+    techStack: ["MERN Stack", "Agentic AI", "Smart Contracts", "Web3 Wallet"]
+  },
 ];
 
 interface ProjectCardProps {
@@ -105,12 +109,9 @@ const ProjectCard = ({ project, index }: ProjectCardProps) => {
         max-w-sm`}
       style={{ transitionDelay: `${index * 150}ms` }}
     >
-      {/* Background gradient effect */}
       <div className="absolute inset-0 bg-gradient-to-br from-primary/5 via-transparent to-primary/5"></div>
       
-      {/* Content container */}
       <div className="relative z-10 p-4">
-        {/* Image section with parallax */}
         <div className="relative mb-4 rounded-lg overflow-hidden aspect-[16/9]">
           <div className="absolute inset-0 overflow-hidden">
             <img
@@ -121,12 +122,10 @@ const ProjectCard = ({ project, index }: ProjectCardProps) => {
               onLoad={() => setImageLoaded(true)}
             />
           </div>
-          {/* Overlay gradient */}
           <div className="absolute inset-0 bg-gradient-to-t from-neutral-900/90 via-neutral-900/30 to-transparent dark:from-black/90 dark:via-black/30 dark:to-transparent 
             opacity-0 group-hover:opacity-100 transition-opacity duration-500"></div>
         </div>
 
-        {/* Title and description */}
         <div className="space-y-3">
           <div className="flex items-start justify-between gap-2">
             <h3 className="text-lg font-bold text-neutral-900 dark:text-white group-hover:text-primary transition-colors duration-300">
@@ -156,7 +155,6 @@ const ProjectCard = ({ project, index }: ProjectCardProps) => {
             </div>
           </div>
 
-          {/* Tech stack */}
           <div className="flex flex-wrap gap-1.5 pt-1">
             {project.techStack.map((tech) => (
               <Badge

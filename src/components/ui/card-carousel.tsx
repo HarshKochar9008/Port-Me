@@ -36,20 +36,26 @@ const CardCarousel: React.FC<CarouselProps> = ({
   const css = `
   .swiper {
     width: 100%;
-    padding-bottom: 80px;
-    padding-top: 20px;
+    padding-bottom: 72px;
+    padding-top: 12px;
     overflow: visible;
-    min-height: 600px;
+    min-height: 520px;
   }
   .swiper-slide {
     background-position: center;
     background-size: cover;
-    width: 350px;
-    max-width: 90vw;
+    width: min(320px, 88vw);
+    max-width: 88vw;
     display: flex;
     align-items: flex-end;
     justify-content: center;
     transition: transform 0.3s ease;
+  }
+  @media (max-width: 639px) {
+    .swiper {
+      min-height: 460px;
+      padding-bottom: 64px;
+    }
   }
   @media (min-width: 640px) {
     .swiper-slide {
@@ -85,7 +91,7 @@ const CardCarousel: React.FC<CarouselProps> = ({
   return (
     <section className="w-full">
       <style>{css}</style>
-      <div className="mx-auto w-full max-w-7xl px-4 sm:px-6 lg:px-8">
+      <div className="mx-auto w-full max-w-7xl px-0 sm:px-6 lg:px-8">
         <div className="relative w-full">
           <div className="relative w-full overflow-hidden">
             <Swiper
@@ -132,11 +138,8 @@ const CardCarousel: React.FC<CarouselProps> = ({
                         transition={{ duration: 0.3 }}
                         onHoverStart={() => setHoveredCard(index)}
                         onHoverEnd={() => setHoveredCard(null)}
-                        className={`relative group overflow-hidden rounded-2xl bg-card border border-border/50 backdrop-blur-sm max-w-xl mx-auto cursor-pointer ${
-                          isActive ? 'shadow-2xl shadow-primary/20' : 'shadow-lg'
-                        }`}
+                        className="relative mx-auto cursor-pointer overflow-hidden rounded-2xl border border-primary/600 bg-card backdrop-blur-sm"
                       >
-                        {/* Animated background gradient */}
                         <motion.div 
                           className="absolute inset-0 bg-gradient-to-br from-primary/10 via-transparent to-primary/5"
                           animate={{
@@ -154,7 +157,7 @@ const CardCarousel: React.FC<CarouselProps> = ({
                         />
                         
                         {/* Content container */}
-                        <div className="relative z-10 p-5 sm:p-6">
+                        <div className="relative z-10 p-4 sm:p-6">
                           {/* Image section with zoom effect */}
                           <motion.div 
                             className="relative mb-5 sm:mb-6 rounded-xl overflow-hidden aspect-[16/9] bg-muted"
@@ -173,7 +176,7 @@ const CardCarousel: React.FC<CarouselProps> = ({
                             <div className="absolute inset-0 bg-gradient-to-t from-black/60 via-transparent to-transparent opacity-0 group-hover:opacity-100 transition-opacity duration-500" />
                           </motion.div>
                           
-                          <div className="space-y-4">
+                          <div className="space-y-3 sm:space-y-4">
                             {/* Title and icons */}
                             <div className="flex items-start justify-between gap-3">
                               <motion.h3 
@@ -185,7 +188,7 @@ const CardCarousel: React.FC<CarouselProps> = ({
                               >
                                 {project.title}
                               </motion.h3>
-                              <div className="flex gap-2 flex-shrink-0">
+                              <div className="flex flex-shrink-0 gap-2">
                                 <motion.div
                                   whileHover={{ scale: 1.1, rotate: 5 }}
                                   whileTap={{ scale: 0.95 }}
@@ -261,12 +264,12 @@ const CardCarousel: React.FC<CarouselProps> = ({
               
               {/* Slide button with animation */}
               <motion.div 
-                className="flex justify-center items-center mt-8 mb-4 min-h-[3rem]"
+                className="mt-6 mb-2 flex min-h-[3rem] items-center justify-center sm:mt-8 sm:mb-4"
                 initial={{ opacity: 0, y: 10 }}
                 animate={{ opacity: 1, y: 0 }}
                 transition={{ delay: 0.5 }}
               >
-                <div className="relative w-full max-w-[12rem] h-12">
+                <div className="relative h-12 w-full max-w-[11rem] sm:max-w-[12rem]">
                   <SlideButton />
                 </div>
               </motion.div>

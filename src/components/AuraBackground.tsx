@@ -20,8 +20,9 @@ export function AuraBackground() {
   return (
     <div 
       className="fixed top-0 w-full h-screen -z-10 aura-background-component" 
-      data-alpha-mask="80"
+      data-alpha-mask="40"
       style={{
+        opacity: 0.5,
         maskImage: 'linear-gradient(to bottom, transparent, #ff0d0d 0%, #fffb00 80%, transparent)',
         WebkitMaskImage: 'linear-gradient(to bottom, transparent, #ff0d0d 0%, #fffb00 80%, transparent)'
       }}

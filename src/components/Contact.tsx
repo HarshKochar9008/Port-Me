@@ -71,9 +71,9 @@ const Contact = () => {
   };
   
   return (
-    <section id="contact" className="bg-muted/50 dark:bg-transparent pb-12 md:pb-16">
+    <section id="contact" className="bg-muted/50 pb-6 dark:bg-transparent md:pb-10">
       <div className="section-container" ref={ref}>
-        <div className="text-center max-w-3xl mx-auto mb-16">
+        <div className="mx-auto mb-10 max-w-3xl text-center sm:mb-16">
           <span className={`inline-block px-3 py-1 text-sm font-medium bg-primary/10 text-primary rounded-full mb-4 transition-all duration-500 ${
             isInView ? 'opacity-100' : 'opacity-0 translate-y-4'
           }`}>
@@ -93,13 +93,13 @@ const Contact = () => {
           </p>
         </div>
         
-        <div className="grid grid-cols-1 md:grid-cols-2 gap-10">
+        <div className="grid grid-cols-1 gap-6 sm:gap-8 md:grid-cols-2 md:gap-10">
           <div className={`transition-all duration-700 ${
             isInView 
               ? 'opacity-100 translate-x-0' 
               : 'opacity-0 -translate-x-10'
           }`}>
-            <SpotlightCard className="glass-card rounded-xl p-6 md:p-8 h-full" spotlightColor="rgba(0, 140, 255, 0.52)">
+            <SpotlightCard className="glass-card h-full rounded-xl p-5 sm:p-6 md:p-8" spotlightColor="rgba(0, 140, 255, 0.52)">
               <h3 className="text-xl font-bold mb-6">Contact Information</h3>
               
               <div className="space-y-6">
@@ -109,7 +109,7 @@ const Contact = () => {
                   </div>
                   <div className="ml-4">
                     <p className="text-sm text-muted-foreground mb-1">Email</p>
-                    <a href="mailto:harshkochar88@gmail.com" className="text-foreground hover:text-primary transition-colors">
+                    <a href="mailto:harshkochar88@gmail.com" className="break-all text-foreground transition-colors hover:text-primary sm:break-normal">
                     harshkochar88@gmail.com
                     </a>
                   </div>
@@ -143,8 +143,8 @@ const Contact = () => {
               ? 'opacity-100 translate-x-0' 
               : 'opacity-0 translate-x-10'
           }`}>
-            <SpotlightCard className="glass-card rounded-xl p-6 md:p-8 h-full" spotlightColor="rgba(0, 140, 255, 0.52)">
-              <form onSubmit={handleSubmit} className="space-y-6">
+            <SpotlightCard className="glass-card h-full rounded-xl p-5 sm:p-6 md:p-8" spotlightColor="rgba(0, 140, 255, 0.52)">
+              <form onSubmit={handleSubmit} className="space-y-5 sm:space-y-6">
                 <div className="space-y-2">
                   <Label htmlFor="name">Name</Label>
                   <Input

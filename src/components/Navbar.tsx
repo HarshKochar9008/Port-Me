@@ -1,11 +1,8 @@
 import { useState, useEffect } from 'react';
 import { Button } from "@/components/ui/button";
-import ThemeToggleButton from "@/components/ui/theme-toggle-button";
-import { useInView } from "@/lib/animations";
 
 const Navbar = () => {
   const [scrolled, setScrolled] = useState(false);
-  const [ref, isInView] = useInView();
 
   useEffect(() => {
     const handleScroll = () => {
@@ -21,20 +18,20 @@ const Navbar = () => {
   };
 
   return (
-    <header className={`fixed top-5 left-0 right-0 z-[50] transition-all duration-500 ease-in-out ${
+    <header className={`fixed left-0 right-0 top-16 z-[50] transition-all duration-500 ease-in-out sm:top-5 ${
       scrolled 
-        ? 'py-3' 
-        : 'py-5'
+        ? 'py-2 sm:py-3' 
+        : 'py-3 sm:py-5'
     }`}>
-      <div className={`mx-auto px-4 sm:px-6 lg:px-8 transition-all duration-500 ease-in-out ${
+      <div className={`mx-auto px-3 sm:px-6 lg:px-8 transition-all duration-500 ease-in-out ${
         scrolled 
           ? 'max-w-5xl' 
           : 'container max-w-6xl'
       }`}>
-        <nav className={`flex items-center justify-between transition-all duration-500 ease-in-out ${
+        <nav className={`flex items-center justify-between gap-3 transition-all duration-500 ease-in-out ${
           scrolled 
-            ? 'bg-background/70 backdrop-blur-xl shadow-lg border-2 border-white rounded-full px-6 py-3' 
-            : 'bg-transparent border-2 border-red px-6 py-3 rounded-full'
+            ? 'rounded-2xl border border-white/30 bg-background/70 px-3 py-2 shadow-lg backdrop-blur-xl sm:rounded-full sm:px-6 sm:py-3' 
+            : 'rounded-2xl border border-white/10 bg-background/40 px-3 py-2 backdrop-blur sm:rounded-full sm:bg-transparent sm:px-6 sm:py-3'
         }`}>
           <a 
             href="#hero" 
@@ -48,7 +45,7 @@ const Navbar = () => {
               <img src="/Logo.png" alt="Logo" className="h-13 w-11" />
             </div>
           </a>
-          <ul className="hidden md:flex items-center space-x-8">
+          <ul className="hidden items-center space-x-8 md:flex">
             {['projects', 'skills', 'contact'].map((item) => (
               <li key={item}>
                 <button
@@ -60,11 +57,11 @@ const Navbar = () => {
               </li>
             ))}
           </ul>
-          <div className="flex items-center gap-4">
+          <div className="flex items-center gap-2 sm:gap-4">
             <div className="flex items-center">
               <Button
                 onClick={() => handleNavClick('contact')}
-                className="inline-flex items-center justify-center h-10 bg-primary text-primary-foreground hover:bg-primary/90 px-4 py-2 rounded-md transition"
+                className="inline-flex h-9 items-center justify-center rounded-md bg-primary px-3 py-2 text-sm text-primary-foreground transition hover:bg-primary/90 sm:h-10 sm:px-4 sm:text-base"
                 aria-label="Get in touch"
               >
                 Get in touch

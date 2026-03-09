@@ -56,7 +56,7 @@ const StatusIcon: React.FC<StatusIconProps> = ({ status }) => {
 
   return (
     <motion.div
-      key={crypto.randomUUID()}
+      key={status}
       initial={{ opacity: 0, scale: 0.5 }}
       animate={{ opacity: 1, scale: 1 }}
       exit={{ opacity: 0 }}
@@ -97,7 +97,6 @@ const SlideButton = forwardRef<HTMLButtonElement, ButtonProps>(
       [0, 1]
     )
 
-    // Add useEffect for redirect (open in new tab)
     React.useEffect(() => {
       if (completed && status === "success") {
         window.open("https://github.com/harshkochar9008", "_blank", "noopener,noreferrer");
@@ -139,9 +138,9 @@ const SlideButton = forwardRef<HTMLButtonElement, ButtonProps>(
       <motion.div
         animate={completed ? BUTTON_STATES.completed : BUTTON_STATES.initial}
         transition={ANIMATION_CONFIG.spring}
-        className="relative left-1/2 -translate-x-1/2 w-full h-12 flex items-center justify-center rounded-full bg-gray-200 dark:bg-gray-700 shadow-lg border border-gray-300 dark:border-gray-600"
+        className="relative left-1/2 flex h-12 w-full -translate-x-1/2 items-center justify-center rounded-full border border-gray-300 bg-gray-200 shadow-lg dark:border-gray-600 dark:bg-gray-700"
       >
-        <p className="text-sm ml-4 text-gray-900 dark:text-gray-100 font-semibold">Slide to see more</p>
+        <p className="ml-4 pr-3 text-xs font-semibold text-gray-900 dark:text-gray-100 sm:text-sm">Slide to see more</p>
         {!completed && hasStartedDragging && (
           <motion.div
             style={{
@@ -156,7 +155,7 @@ const SlideButton = forwardRef<HTMLButtonElement, ButtonProps>(
             transition={{ duration: 0.2 }}
           />
         )}
-        <AnimatePresence key={crypto.randomUUID()}>
+        <AnimatePresence>
           {!completed && (
             <motion.div
               ref={dragHandleRef}
@@ -175,7 +174,11 @@ const SlideButton = forwardRef<HTMLButtonElement, ButtonProps>(
                 disabled={status === "loading"}
                 {...props}
                 size="icon"
-                className="rounded-full shadow-lg border-2 border-white dark:border-gray-200 bg-blue-500 hover:bg-blue-600 dark:bg-blue-400 dark:hover:bg-blue-500 text-white w-10 h-10 isDragging && scale-105 transition-transform"
+                className={cn(
+                  "h-10 w-10 rounded-full border-2 border-white bg-blue-500 text-white shadow-lg transition-transform hover:bg-blue-600 dark:border-gray-200 dark:bg-blue-400 dark:hover:bg-blue-500",
+                  isDragging && "scale-105",
+                  className
+                )}
               >
                 <SendHorizontal className="size-4" />
               </Button>
@@ -183,7 +186,7 @@ const SlideButton = forwardRef<HTMLButtonElement, ButtonProps>(
           )}
         </AnimatePresence>
 
-        <AnimatePresence key={crypto.randomUUID()}>
+        <AnimatePresence>
           {completed && (
             <motion.div
               className="absolute inset-0 flex items-center justify-center"
@@ -195,12 +198,9 @@ const SlideButton = forwardRef<HTMLButtonElement, ButtonProps>(
                 ref={ref}
                 disabled={status === "loading"}
                 {...props}
-                className={cn(
-                  "size-full rounded-full transition-all duration-300 bg-blue-500 hover:bg-blue-600 dark:bg-blue-400 dark:hover:bg-blue-500 text-white",
-                  className
-                )}
+                className="size-full rounded-full bg-blue-500 text-white transition-all duration-300 hover:bg-blue-600 dark:bg-blue-400 dark:hover:bg-blue-500"
               >
-                <AnimatePresence key={crypto.randomUUID()} mode="wait">
+                <AnimatePresence mode="wait">
                   <StatusIcon status={status} />
                 </AnimatePresence>
               </Button>

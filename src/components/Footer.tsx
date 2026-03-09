@@ -1,6 +1,5 @@
 import { useState, useEffect } from 'react';
 import { Github, Linkedin, Twitter } from "lucide-react";
-import { Button } from "@/components/ui/button";
 
 const Footer = () => {
   const currentYear = new Date().getFullYear();
@@ -22,13 +21,8 @@ const Footer = () => {
     return () => window.removeEventListener('scroll', handleScroll);
   }, []);
   
-  const handleScrollToContact = () => {
-    const element = document.getElementById('contact');
-    element?.scrollIntoView({ behavior: 'smooth' });
-  };
-  
   return (
-    <footer className={`w-full mt-auto py-8 md:py-6 transition-all duration-500 ease-in-out ${
+    <footer className={`mt-auto w-full py-6 transition-all duration-500 ease-in-out md:py-6 ${
       scrolled ? 'pb-8' : 'pb-6'
     }`}>
       <div className={`mx-auto px-4 sm:px-6 lg:px-8 transition-all duration-500 ease-in-out ${
@@ -36,20 +30,20 @@ const Footer = () => {
           ? 'max-w-5xl' 
           : 'container max-w-6xl'
       }`}>
-        <div className={`flex flex-col items-center justify-center gap-6 md:flex-row md:justify-between md:items-start transition-all duration-500 ease-in-out ${
+        <div className={`flex flex-col items-center justify-center gap-4 transition-all duration-500 ease-in-out md:flex-row md:items-start md:justify-between md:gap-6 ${
           scrolled 
-            ? 'bg-background/70 backdrop-blur-xl shadow-lg border border-border/30 rounded-full px-8 py-4' 
-            : 'bg-transparent border-t border-border/20 px-0 py-0 pt-2'
+            ? 'rounded-2xl border border-border/30 bg-background/70 px-5 py-4 shadow-lg backdrop-blur-xl sm:rounded-full sm:px-8' 
+            : 'border-t border-border/20 bg-transparent px-0 pt-2'
         }`}>
           <div className="order-3 md:order-1">
-            <p className="text-xs sm:text-sm text-muted-foreground text-center md:text-left">
+            <p className="text-center text-xs text-muted-foreground sm:text-sm md:text-left">
               © {currentYear} Developer Portfolio. All rights reserved by HK.
             </p>
           </div>
           
-          <div className="flex flex-col items-center justify-center gap-6 order-1 md:order-2">
+          <div className="order-1 flex flex-col items-center justify-center gap-4 md:order-2 md:gap-6">
             
-            <div className="flex items-center justify-center flex-row gap-x-6">
+            <div className="flex flex-row items-center justify-center gap-x-5 sm:gap-x-6">
               <a 
                 href="https://github.com/HarshKochar9008" 
                 target="_blank" 

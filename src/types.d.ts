@@ -5,6 +5,7 @@ declare module '@/components/ui/*' {
 export interface Project {
   id: string;
   title: string;
+  logo: string;
   image: string;
   demoUrl: string;
   githubUrl: string;

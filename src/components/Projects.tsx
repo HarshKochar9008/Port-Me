@@ -18,9 +18,9 @@ const Projects = () => {
   }))
 
   return (
-    <section id="projects" className="relative overflow-hidden">
+    <section id="projects" className="relative overflow-hidden px-4 pt-6 sm:px-0 sm:pt-10 lg:pt-14">
       <div className="section-container relative z-10" ref={ref}>
-        <div className="text-center max-w-3xl mx-auto mb-12 sm:mb-16">
+        <div className="mx-auto mb-8 max-w-3xl text-center sm:mb-16">
           <motion.span 
             initial={{ opacity: 0, y: 20 }}
             animate={isInView ? { opacity: 1, y: 0 } : { opacity: 0, y: 20 }}
@@ -41,27 +41,26 @@ const Projects = () => {
                 animate={isInView ? { rotate: [0, 10, -10, 0] } : {}}
                 transition={{ duration: 0.6, delay: 0.3, repeat: Infinity, repeatDelay: 3 }}
               >
-                <SparklesIcon className="inline-block fill-[#EEBDE0] stroke-1 text-neutral-800 dark:text-neutral-200 w-7 h-7 mb-1" />
+                <SparklesIcon className="inline-block fill-[#fc50ed] stroke-1 text-neutral-800 dark:text-neutral-200 w-7 h-7 mb-1" />
               </motion.div>
               Latest Projects
             </span>
           </motion.h2>
           
-          <motion.p 
+          {/* <motion.p 
             initial={{ opacity: 0, y: 20 }}
             animate={isInView ? { opacity: 1, y: 0 } : { opacity: 0, y: 20 }}
             transition={{ duration: 0.5, delay: 0.2 }}
             className="text-primary/70"
           >
             A selection of my recent development work, showcasing different technologies and problem-solving approaches.
-          </motion.p>
+          </motion.p> */}
         </div>
-        {/* Carousel below the heading */}
         <motion.div 
           initial={{ opacity: 0, y: 30 }}
           animate={isInView ? { opacity: 1, y: 0 } : { opacity: 0, y: 30 }}
           transition={{ duration: 0.6, delay: 0.3 }}
-          className="mt-8 sm:mt-12 mb-8 sm:mb-12"
+          className="mb-6 mt-4 sm:mb-12 sm:mt-10"
         >
           <CardCarousel
             projects={projects}
