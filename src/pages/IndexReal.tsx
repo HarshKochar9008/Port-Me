@@ -1,6 +1,6 @@
 import { useEffect, useRef, useState } from "react";
 import { projects } from "@/components/ProjectCard";
-import fein from "@/fein2.mp3";
+import fein from "@/soothing.mp3";
 import { MusicToggleButton } from "@/components/v1/skiper25";
 import Contact from "@/components/Contact";
 import { Badge } from "@/components/ui/badge";
@@ -153,7 +153,7 @@ const IndexReal = () => {
       <main className="relative z-10 mx-auto w-full max-w-5xl px-4 pb-24 pt-10 sm:px-6 sm:pb-12 sm:pt-20">
         <section id="home" className="flex flex-col gap-6 sm:gap-8 lg:flex-row lg:items-start lg:justify-between">
           <div className="min-w-0 text-center lg:text-left">
-            <h1 className="text-4xl font-semibold tracking-tight pt-4 sm:text-6xl">
+            <h1 className="pt-4 text-4xl font-['Space_Grotesk'] font-medium tracking-[-0.04em] text-white sm:text-6xl">
               Harsh Kochar
             </h1>
             <p className="mt-2 text-sm text-neutral-300 sm:text-base font-italic text-blue-400 ">
@@ -272,7 +272,7 @@ const IndexReal = () => {
         <section id="projects" className="mt-5 sm:mt-5">
           <div className="flex flex-col items-start gap-2 sm:flex-row sm:items-baseline sm:justify-between sm:gap-4">
             <h2 className="text-xl font-semibold tracking-tight sm:text-2xl">
-              Work Experience
+              Project Experience
             </h2>
             <p className="text-xs text-neutral-400 sm:text-sm">My Work</p>
           </div>

@@ -1,4 +1,4 @@
-@import url('https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600&display=swap');
+@import url('https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600&family=Space+Grotesk:wght@400;500;600;700&display=swap');
 
 @tailwind base;
 @tailwind components;
@@ -285,7 +285,8 @@ section#home {
 }
 
 section#about,
-section#projects {
+section#projects,
+section#design-studio {
     height: auto !important;
     min-height: auto !important;
     margin-bottom: 0;

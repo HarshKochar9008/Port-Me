@@ -1,8 +1,7 @@
 "use client";
 
 import { motion } from "framer-motion";
-import React, { useEffect, useState } from "react";
-import useSound from "use-sound";
+import React, { useEffect, useRef, useState } from "react";
 import { cn } from "@/lib/utils";
 
 export interface MusicToggleButtonProps {
@@ -12,6 +11,7 @@ export interface MusicToggleButtonProps {
 
 export const MusicToggleButton = ({ soundUrl, className }: MusicToggleButtonProps) => {
   const bars = 5;
+  const audioRef = useRef<HTMLAudioElement | null>(null);
 
   const getRandomHeights = () => {
     return Array.from({ length: bars }, () => Math.random() * 0.8 + 0.2);
@@ -20,14 +20,28 @@ export const MusicToggleButton = ({ soundUrl, className }: MusicToggleButtonProp
   const [heights, setHeights] = useState(getRandomHeights());
   const [isPlaying, setIsPlaying] = useState(false);
 
-  const [play, { pause }] = useSound(soundUrl ?? "/audio/audio.m4a", {
-    loop: true,
-    onplay: () => setIsPlaying(true),
-    onend: () => setIsPlaying(false),
-    onpause: () => setIsPlaying(false),
-    onstop: () => setIsPlaying(false),
-    soundEnabled: true,
-  });
+  useEffect(() => {
+    const audio = new Audio(soundUrl ?? "/audio/audio.m4a");
+    audio.loop = true;
+    audio.preload = "none";
+
+    const syncPlayingState = () => setIsPlaying(!audio.paused);
+    const syncPausedState = () => setIsPlaying(false);
+
+    audio.addEventListener("play", syncPlayingState);
+    audio.addEventListener("pause", syncPausedState);
+    audio.addEventListener("ended", syncPausedState);
+    audioRef.current = audio;
+
+    return () => {
+      audio.pause();
+      audio.currentTime = 0;
+      audio.removeEventListener("play", syncPlayingState);
+      audio.removeEventListener("pause", syncPausedState);
+      audio.removeEventListener("ended", syncPausedState);
+      audioRef.current = null;
+    };
+  }, [soundUrl]);
 
   useEffect(() => {
     if (isPlaying) {
@@ -42,14 +56,21 @@ export const MusicToggleButton = ({ soundUrl, className }: MusicToggleButtonProp
     setHeights(Array(bars).fill(0.1));
   }, [isPlaying]);
 
-  const handleClick = () => {
+  const handleClick = async () => {
+    const audio = audioRef.current;
+    if (!audio) return;
+
     if (isPlaying) {
-      pause();
-      setIsPlaying(false);
+      audio.pause();
       return;
     }
-    play();
-    setIsPlaying(true);
+
+    try {
+      await audio.play();
+    } catch (error) {
+      console.error("Unable to start audio playback.", error);
+      setIsPlaying(false);
+    }
   };
 
   return (
