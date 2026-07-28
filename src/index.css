@@ -502,9 +502,10 @@ html, body {
   }
 }
 
+/* Timed to land just under the 1500ms splash timer in App.tsx — change both. */
 .logo-zoom-overlay {
-  animation: logoZoom 1.5s cubic-bezier(0.34, 1.56, 0.64, 1) forwards,
-             logoFadeOut 1s ease-in-out 2s forwards;
+  animation: logoZoom 0.8s cubic-bezier(0.34, 1.56, 0.64, 1) forwards,
+             logoFadeOut 0.5s ease-in-out 0.95s forwards;
 }
 
 .logo-zoom-animation {
@@ -521,4 +522,113 @@ html, body {
   100% {
     transform: scale(1);
   }
+}
+
+/* ═════════════════════════════════════════════════════════════
+   Keyboard focus, restored
+   -----------------------------------------------------------
+   The unscoped `* { outline: 0 }` above (leftover from the template
+   stylesheet this file grew out of) removed every focus ring on the
+   site, so tabbing through the page gave no indication of position.
+   Scoped to :focus-visible, so it only ever shows for keyboard use —
+   mouse clicks stay clean, and components that style their own focus
+   are unaffected because they set box-shadow, not outline.
+   ═════════════════════════════════════════════════════════════ */
+:focus-visible {
+  outline: 2px solid rgb(96 165 250 / 0.9);
+  outline-offset: 2px;
+}
+
+/* ═════════════════════════════════════════════════════════════
+   Real-page scope reset
+   -----------------------------------------------------------
+   Everything below `* { margin: 0 }` near the top of this file is an
+   unscoped stylesheet carried over from an older template. It still
+   drives the Design page, so it can't simply be deleted — but it also
+   reaches into the Real page and breaks it in four ways:
+
+     section            → margin-top: 8rem; height: 80vh
+                          (the reason every section id needs its own
+                          `height: auto !important` override above)
+     section#resume,
+     section#skills     → margin-bottom: 10rem, producing 160px voids
+                          between two sections while their neighbours
+                          sit 20px apart
+     section > h2       → text-align: center; color: #4db5ff, which is
+                          why "About" rendered centred and blue while
+                          every other heading is left-aligned and white
+     a                  → color: #4db5ff on every link
+     img                → width: 100%, which collapses `w-auto` boxes
+
+   The Real page owns its own spacing and colour, so this block hands
+   it back. `.hk-real` is set on the page root in IndexReal.tsx; the
+   !important flags only exist to match the ones being undone.
+   ═════════════════════════════════════════════════════════════ */
+.hk-real section {
+  padding: 0 !important;
+  height: auto !important;
+  min-height: 0 !important;
+}
+
+.hk-real section > h2,
+.hk-real section > h5 {
+  text-align: left;
+  color: inherit;
+  margin-bottom: 0;
+}
+
+.hk-real a {
+  color: inherit;
+}
+
+.hk-real img {
+  width: auto;
+  object-fit: unset;
+}
+
+/* One rhythm for the whole page instead of per-section margins that drifted
+   between 20px and 160px. Sections are siblings in a flow container, so a
+   single sibling rule sets every gap at once.
+
+   !important on both halves, reluctantly: the legacy sheet zeroes section
+   margins with `margin: 0 !important` under 640px and sets `margin-bottom:
+   10rem` on #resume/#skills above it, so nothing short of this out-ranks it in
+   both directions. The two rules have equal specificity — the gap rule wins
+   the ties because it comes second. */
+.hk-real .hk-flow > * {
+  margin: 0 !important;
+}
+.hk-real .hk-flow > * + * {
+  margin-top: 4.5rem !important;
+}
+@media (min-width: 640px) {
+  .hk-real .hk-flow > * + * {
+    margin-top: 6rem !important;
+  }
+}
+
+/* Section header: heading left, quiet label right, hairline underneath.
+   Repeated verbatim in five places before this; now one class. */
+.hk-head {
+  display: flex;
+  flex-direction: column;
+  align-items: flex-start;
+  gap: 0.25rem;
+  padding-bottom: 0.875rem;
+  border-bottom: 1px solid rgb(255 255 255 / 0.08);
+}
+@media (min-width: 640px) {
+  .hk-head {
+    flex-direction: row;
+    align-items: baseline;
+    justify-content: space-between;
+    gap: 1rem;
+  }
+}
+.hk-head-label {
+  font-size: 11px;
+  font-weight: 500;
+  letter-spacing: 0.18em;
+  text-transform: uppercase;
+  color: rgb(163 163 163 / 0.9);
 }

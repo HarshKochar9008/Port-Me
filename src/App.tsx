@@ -8,21 +8,43 @@ import NotFound from "./pages/NotFound";
 import Dock from "./components/Dock";
 import { VscHome, VscProject, VscTools, VscMail } from "react-icons/vsc";
 import { ThemeProvider } from "./components/ThemeProvider";
-import MobileDesktopNotice from "./components/MobileDesktopNotice";
 import AuraBackground from "./components/AuraBackground";
 import { useState, useEffect } from "react";
-import { PortfolioVersionProvider } from "@/components/portfolio/portfolio-version";
+import { PortfolioVersionProvider, usePortfolioVersion } from "@/components/portfolio/portfolio-version";
 import PortfolioVersionToggle from "@/components/portfolio/PortfolioVersionToggle";
 
 const queryClient = new QueryClient();
+
+/**
+ * Mobile nav for the Design page only.
+ *
+ * This used to render for both versions, which stacked it on top of the Real
+ * page's own bottom dock — two fixed navigation bars overlapping each other at
+ * the foot of every mobile viewport. The Real page ships its own (with an
+ * active-section indicator), so this one steps aside for it.
+ *
+ * A child component rather than a check in App, because the version lives in a
+ * context App is the one providing.
+ */
+const DesignMobileDock = ({ items }: { items: React.ComponentProps<typeof Dock>["items"] }) => {
+  const { version } = usePortfolioVersion();
+  if (version === "real") return null;
+  return (
+    <div className="block md:hidden">
+      <Dock items={items} />
+    </div>
+  );
+};
 
 const App = () => {
   const [isLoading, setIsLoading] = useState(true);
 
   useEffect(() => {
+    // 3s of splash before any content is a long time to ask a recruiter to wait.
+    // Kept long enough to read as intentional, short enough not to cost a visit.
     const timer = setTimeout(() => {
       setIsLoading(false);
-    }, 3000);
+    }, 1500);
 
     return () => clearTimeout(timer);
   }, []);
@@ -42,7 +64,10 @@ const App = () => {
   ];
 
   return (
-    <ThemeProvider attribute="class" defaultTheme="system" enableSystem>
+    // The page background is forced to #000 in index.css, so the light token set was
+    // never actually viable — it just left shadcn components (Contact's bg-muted, inputs,
+    // labels) rendering light-theme colours on a black page.
+    <ThemeProvider attribute="class" defaultTheme="dark" enableSystem={false}>
       <QueryClientProvider client={queryClient}>
         <TooltipProvider>
           <Toaster />
@@ -62,12 +87,11 @@ const App = () => {
 
           <BrowserRouter future={{ v7_startTransition: true }}>
             <div className="relative min-h-screen">
-              <MobileDesktopNotice />
-              <div className="block md:hidden">
-                <Dock 
-                  items={items}
-                />
-              </div>
+              {/* The "best experience on desktop" interstitial used to sit here.
+                  Removed: it blocked the page on first visit for the audience
+                  most likely to arrive on a phone, and both versions render
+                  fine at 390px. The component is still in the repo. */}
+              <DesignMobileDock items={items} />
               <Routes>
                 <Route path="/" element={<Suspense fallback={<div className="min-h-screen flex items-center justify-center" />}><Index /></Suspense>} />
                 <Route path="*" element={<NotFound />} />

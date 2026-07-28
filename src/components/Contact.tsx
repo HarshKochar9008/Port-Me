@@ -5,7 +5,7 @@ import { Textarea } from "@/components/ui/textarea";
 import { Label } from "@/components/ui/label";
 import { useInView } from "@/lib/animations";
 import { useToast } from "@/hooks/use-toast";
-import { Mail, Phone, MapPin } from "lucide-react";
+import { Mail, MapPin } from "lucide-react";
 import SpotlightCard from "./SpotlightCard";
 import emailjs from '@emailjs/browser';
 
@@ -114,17 +114,8 @@ const Contact = () => {
                     </a>
                   </div>
                 </div>
-                <div className="flex items-start">
-                  <div className="flex-shrink-0 w-10 h-10 flex items-center justify-center rounded-full bg-primary/10 text-primary">
-                    <Phone size={20} />
-                  </div>
-                  <div className="ml-4">
-                    <p className="text-sm text-muted-foreground mb-1">Phone</p>
-                    <a href="tel:+91 7030649008" className="text-foreground hover:text-primary transition-colors">
-                      +91 7030649008
-                    </a>
-                  </div>
-                </div>
+                {/* Phone row removed — the number is no longer published on
+                    either version of the site. */}
                 <div className="flex items-start">
                   <div className="flex-shrink-0 w-10 h-10 flex items-center justify-center rounded-full bg-primary/10 text-primary">
                     <MapPin size={20} />

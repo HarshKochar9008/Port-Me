@@ -5,15 +5,20 @@ import { Badge } from "@/components/ui/badge";
 import { useState, useRef, useEffect } from "react";
 import { Project } from "@/types";
 
+/* `blurb` is derived from each project's own stack and the copy in
+   CodingHabits.tsx — it says what the thing is, since a row of tech badges
+   only says what it was built with. Worth replacing with a line written from
+   actual product knowledge; these are deliberately conservative. */
 export const projects: Project[] = [
   {
     id: "project-1",
-    title: "ChargeNchill ",
+    title: "ChargeNchill",
     logo: "https://i.ibb.co/Rpvz0SDm/loading.png",
     image: "https://i.ibb.co/LhC765Zs/Screenshot-2026-03-09-144104.png",
     demoUrl: "https://www.chargenchill.eu/",
     githubUrl: "https://github.com/HarshKochar9008/ChargeNchill",
-    techStack: ["JavaScript", "Tailwind CSS", "Node.js", "Figma"]
+    techStack: ["JavaScript", "Tailwind CSS", "Node.js", "Figma"],
+    blurb: "Designed in Figma and shipped to production on its own domain."
   },
   {
     id: "project-2",
@@ -22,7 +27,8 @@ export const projects: Project[] = [
     image: "https://i.ibb.co/LzSMDMsc/Screenshot-2026-03-09-143641.png",
     demoUrl: "https://gossipss.vercel.app/",
     githubUrl: "https://github.com/HarshKochar9008/Gossips",
-    techStack: ["TypeScript", "Tailwind CSS", "Node.js", "Express , MongoDB"]
+    techStack: ["TypeScript", "Tailwind CSS", "Node.js", "Express", "MongoDB"],
+    blurb: "TypeScript front end on an Express API, with MongoDB behind it."
   },
   {
     id: "project-3",
@@ -31,7 +37,8 @@ export const projects: Project[] = [
     image: "https://i.ibb.co/T9cJPjF/Screenshot-2026-03-09-144402.png",
     demoUrl: "https://wince.vercel.app/",
     githubUrl: "https://github.com/HarshKochar9008/WINCE",
-    techStack: ["React", "TypeScript", "Node.js", "Express", "PostgreSQL", "Tailwind CSS"]
+    techStack: ["React", "TypeScript", "Node.js", "Express", "PostgreSQL", "Tailwind CSS"],
+    blurb: "Scheduling tool — React client, Express REST API, PostgreSQL store."
   },
   {
     id: "project-4",
@@ -40,7 +47,8 @@ export const projects: Project[] = [
     image: "https://i.ibb.co/Zbs2s7F/Screenshot-2026-03-09-152906.png",
     demoUrl: "https://apexflowagent.com/",
     githubUrl: "https://github.com/HarshKochar9008/ApexFlow_token",
-    techStack: ["MERN Stack", "Agentic AI", "Smart Contracts", "Web3 Wallet"]
+    techStack: ["MERN Stack", "Agentic AI", "Smart Contracts", "Web3 Wallet"],
+    blurb: "MERN app wired to Solidity contracts, wallet auth and agentic tooling."
   },
 ];
 

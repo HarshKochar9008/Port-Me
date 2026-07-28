@@ -47,7 +47,10 @@ export const skillsData: SkillCategory[] = [
     categoryIcon: FaCode,
     items: [
       { name: "React", icon: SiReact, color: "#61DAFB" },
-      { name: "Next.js", icon: SiNextdotjs, color: "#000000" },
+      // Next.js and Express both brand as pure black, which disappears entirely
+      // on a dark chip. Using their marks in white instead, as both brands do
+      // for dark backgrounds.
+      { name: "Next.js", icon: SiNextdotjs, color: "#FFFFFF" },
       { name: "TypeScript", icon: SiTypescript, color: "#3178C6" },
       { name: "Tailwind CSS", icon: SiTailwindcss, color: "#06B6D4" },
       { name: "Redux", icon: SiRedux, color: "#764ABC" },
@@ -61,7 +64,7 @@ export const skillsData: SkillCategory[] = [
     categoryIcon: FaServer,
     items: [
       { name: "Node.js", icon: SiNodedotjs, color: "#339933" },
-      { name: "Express", icon: SiExpress, color: "#000000" },
+      { name: "Express", icon: SiExpress, color: "#FFFFFF" },
       { name: "Python", icon: SiPython, color: "#3776AB" },
       { name: "Java", icon: FaJava, color: "#007396" },
       { name: "GraphQL", icon: SiGraphql, color: "#E10098" },
