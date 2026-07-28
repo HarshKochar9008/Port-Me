@@ -285,6 +285,7 @@ section#home {
 }
 
 section#about,
+section#habits,
 section#projects,
 section#design-studio {
     height: auto !important;

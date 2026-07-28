@@ -3,6 +3,7 @@ import { projects } from "@/components/ProjectCard";
 import fein from "@/soothing.mp3";
 import { MusicToggleButton } from "@/components/v1/skiper25";
 import Contact from "@/components/Contact";
+import CodingHabits from "@/components/CodingHabits";
 import { Badge } from "@/components/ui/badge";
 import { Button } from "@/components/ui/button";
 import { skillsData } from "@/data/skills";
@@ -269,6 +270,9 @@ const IndexReal = () => {
             </li>
           </ul>
         </section>
+
+        <CodingHabits />
+
         <section id="projects" className="mt-5 sm:mt-5">
           <div className="flex flex-col items-start gap-2 sm:flex-row sm:items-baseline sm:justify-between sm:gap-4">
             <h2 className="text-xl font-semibold tracking-tight sm:text-2xl">

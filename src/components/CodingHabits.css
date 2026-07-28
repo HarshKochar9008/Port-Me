@@ -1,0 +1,653 @@
+/* ─────────────────────────────────────────────────────────────
+   Stamp-card fan — a port of the Paxel (paxel.ycombinator.com)
+   "what people have learned" section. Geometry, easing, rotation
+   fan, peer-pushback and the dashed-perforation stamp frame are
+   kept 1:1 with the original. The palette is inverted for this
+   portfolio's dark page: frosted-glass cards instead of white paper,
+   and the dithered art drawn in light on transparency.
+   ───────────────────────────────────────────────────────────── */
+
+.hk-habits {
+  --hk-line: #ff6600; /* YC orange — accent, highlighter */
+  --hk-ink: rgba(255, 255, 255, 0.72); /* card body text */
+  font-family: "Space Grotesk", system-ui, -apple-system, sans-serif;
+}
+
+/* ─── Container ───
+   Deliberately has no surface of its own — the glass lives on the cards.
+   `overflow: hidden` is load-bearing: the cards are rotated and lift on
+   hover, and transforms don't reserve layout space, so without it the fan
+   spills onto the sections above and below. --hk-pad is shared with the
+   mobile carousel so the track can bleed exactly to the container's edge. */
+.hk-habits-panel {
+  --hk-pad: 20px;
+  position: relative;
+  padding: var(--hk-pad);
+  border-radius: 28px;
+  overflow: hidden;
+}
+@media (min-width: 640px) {
+  .hk-habits-panel {
+    --hk-pad: 24px;
+  }
+}
+/* Ambient wash. Frosted glass over a flat black page just reads as grey —
+   the cards need something with colour and gradient behind them to refract,
+   so this lays down a soft blue/orange bloom for them to pick up. */
+.hk-habits-panel::before {
+  content: "";
+  position: absolute;
+  inset: 0;
+  background: radial-gradient(
+      58% 50% at 20% 16%,
+      rgba(59, 130, 246, 0.22),
+      transparent 70%
+    ),
+    radial-gradient(52% 46% at 84% 74%, rgba(255, 102, 0, 0.12), transparent 70%),
+    radial-gradient(70% 60% at 55% 50%, rgba(255, 255, 255, 0.04), transparent 70%);
+  pointer-events: none;
+}
+
+/* ─── Lead copy ─── */
+.hk-habits-lead {
+  max-width: 600px;
+  text-align: left;
+}
+.hk-habits-lead p {
+  font-size: 16px;
+  line-height: 1.6;
+  margin: 0 0 16px;
+}
+.hk-habits-lead p:last-child {
+  margin-bottom: 0;
+}
+@media (max-width: 760px) {
+  .hk-habits-lead p {
+    font-size: 15px;
+  }
+}
+
+/* Light-orange highlighter — a soft marker swipe that fully covers the
+   phrase. Fixed em-height band, vertically centered. */
+.hk-mark {
+  background-image: linear-gradient(
+    rgba(255, 102, 0, 0.22),
+    rgba(255, 102, 0, 0.22)
+  );
+  background-repeat: no-repeat;
+  background-position: 0 50%;
+  background-size: 100% 1.25em;
+  padding: 0 0.18em;
+  -webkit-box-decoration-break: clone;
+  box-decoration-break: clone;
+}
+
+/* ─── Shuffle control ───
+   Pinned hard right and sat directly on top of the fan, so it reads as
+   belonging to the cards rather than to the section heading. The fan's own
+   28px top padding supplies the gap — no extra margin needed underneath. */
+.hk-shuffle-bar {
+  display: flex;
+  justify-content: flex-end;
+  margin-top: 18px;
+}
+.hk-shuffle {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  width: 34px;
+  height: 34px;
+  border-radius: 999px;
+  /* Borrows the clickable card's border and bloom, so the one interactive
+     control in the section is styled like everything else that responds. */
+  border: 1px solid rgba(255, 122, 26, 0.5);
+  background: rgba(12, 15, 26, 0.86);
+  color: #ff9147;
+  cursor: pointer;
+  padding: 0;
+  transition: transform 0.4s cubic-bezier(0.32, 0.72, 0, 1),
+    border-color 0.4s ease, box-shadow 0.4s ease, color 0.4s ease;
+}
+.hk-shuffle:hover:not(:disabled),
+.hk-shuffle:focus-visible {
+  outline: none;
+  color: #ffb37a;
+  border-color: rgba(255, 150, 62, 0.9);
+  box-shadow: 0 0 0 1px rgba(255, 122, 26, 0.25),
+    0 0 22px -8px rgba(255, 110, 20, 0.7);
+  transform: translateY(-1px);
+}
+.hk-shuffle:disabled {
+  cursor: default;
+}
+.hk-shuffle-icon {
+  width: 16px;
+  height: 16px;
+}
+/* Disabled only ever means "mid-shuffle" here, so it doubles as the spinner
+   hook — the icon turns for exactly as long as the fan is in motion. */
+.hk-shuffle:disabled .hk-shuffle-icon {
+  animation: hk-shuffle-spin 0.85s linear infinite;
+}
+@keyframes hk-shuffle-spin {
+  to {
+    transform: rotate(360deg);
+  }
+}
+
+/* ─── Card fan — 5 equal portrait cards per row, rotated, overlapping ─── */
+.hk-cards {
+  /* How far each row tucks under the one above it. Also subtracted by
+     --hk-row-step, so the shuffle walks a card between rows by the distance
+     they actually sit apart rather than by a full card height. */
+  --hk-row-overlap: 40px;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  margin: 20px auto 0;
+  /* Padding is clearance, not decoration: the ±3° fan throws the top corners
+     ~15px sideways and the hover lift raises a card 12px, and neither
+     reserves layout space. Without this the panel clips them. */
+  padding: 28px 8px 12px;
+  width: 100%;
+  max-width: 100%;
+}
+
+/* Each visual row is its own flex container so peer-pushback (sibling
+   selectors) stays scoped to the row. */
+.hk-cards-row {
+  display: flex;
+  justify-content: center;
+  align-items: flex-end;
+}
+/* Every row after the first tucks up under the previous one. */
+.hk-cards-row:not(:first-child) {
+  margin-top: calc(var(--hk-row-overlap) * -1);
+}
+
+.hk-mini {
+  --rot: 0deg;
+  /* One variable drives the whole card. Width sets the size; the
+     aspect-ratio locks the proportions (220:320 = 11:16). Every inner
+     dimension (art, padding, type, stamp holes) is a fraction of
+     --card-w, so shrinking the card scales everything uniformly. */
+  /* Capped at 200px rather than Paxel's 220px: their frame is 1200px wide,
+     this column is 1024px, and the fan plus its rotation spill has to clear
+     the glass panel's padding. */
+  --card-w: clamp(140px, 17vw, 200px);
+  display: flex;
+  flex-direction: column;
+  flex: none;
+  width: var(--card-w);
+  height: auto;
+  aspect-ratio: 11 / 16;
+  /* How far each card slides under its left-hand neighbour. Also subtracted by
+     --hk-col-step below, for the same reason the row overlap is. */
+  --hk-col-overlap: calc(var(--card-w) * 0.2);
+  margin-left: calc(var(--hk-col-overlap) * -1);
+  /* Slot-to-slot distance in each axis, and the offset that walks a card from
+     its own slot onto the middle of the fan. --hk-cx / --hk-cy arrive from the
+     TSX as signed slot counts, so this stays correct at every --card-w without
+     measuring anything. Row step is card height (11:16) less the row tuck.
+     --hk-gather lets the mobile carousel opt out of the horizontal walk, where
+     "the middle of the fan" doesn't mean anything. */
+  --hk-col-step: calc(var(--card-w) - var(--hk-col-overlap));
+  --hk-row-step: calc(var(--card-w) * 16 / 11 - var(--hk-row-overlap, 0px));
+  --hk-gx: calc(var(--hk-gather, 1) * var(--hk-cx, 0) * var(--hk-col-step));
+  --hk-gy: calc(var(--hk-gather, 1) * var(--hk-cy, 0) * var(--hk-row-step));
+  /* The glass itself lives on ::before, not here — stacking backdrop-filter
+     on the same element as the mask and the hover transform makes Chromium
+     re-raster the card and drop the canvas art mid-hover. */
+  background: transparent;
+  border: 1px solid rgba(255, 122, 26, 0.5);
+  border-radius: 0;
+  padding: 0;
+  cursor: pointer;
+  text-align: left;
+  font-family: inherit;
+  color: var(--hk-ink);
+  position: relative;
+  z-index: 1;
+  transform: rotate(var(--rot));
+  transform-origin: 50% 100%;
+  /* Apple-style easing — gentle takeoff, smooth glide, soft landing.
+     One transition drives both hover-in and hover-out. */
+  transition: transform 0.6s cubic-bezier(0.32, 0.72, 0, 1),
+    box-shadow 0.6s cubic-bezier(0.32, 0.72, 0, 1),
+    background-color 0.6s cubic-bezier(0.32, 0.72, 0, 1),
+    border-color 0.6s cubic-bezier(0.32, 0.72, 0, 1);
+  will-change: transform;
+  backface-visibility: hidden;
+  -webkit-font-smoothing: antialiased;
+  overflow: hidden;
+  box-shadow: 0 6px 20px -10px rgba(0, 0, 0, 0.6);
+  /* Three real punch holes across the top, cut out of the card with a mask
+     so the page shows through. Hole geometry scales with --card-w, so at
+     220px these resolve to ~7px holes, 24px apart, 16px down. */
+  -webkit-mask: radial-gradient(
+      circle calc(var(--card-w) * 0.032) at calc(50% - var(--card-w) * 0.109)
+        calc(var(--card-w) * 0.073),
+      #0000 calc(var(--card-w) * 0.0273),
+      #000 calc(var(--card-w) * 0.0295)
+    ),
+    radial-gradient(
+      circle calc(var(--card-w) * 0.032) at 50% calc(var(--card-w) * 0.073),
+      #0000 calc(var(--card-w) * 0.0273),
+      #000 calc(var(--card-w) * 0.0295)
+    ),
+    radial-gradient(
+      circle calc(var(--card-w) * 0.032) at calc(50% + var(--card-w) * 0.109)
+        calc(var(--card-w) * 0.073),
+      #0000 calc(var(--card-w) * 0.0273),
+      #000 calc(var(--card-w) * 0.0295)
+    );
+  -webkit-mask-composite: source-in;
+  mask: radial-gradient(
+      circle calc(var(--card-w) * 0.032) at calc(50% - var(--card-w) * 0.109)
+        calc(var(--card-w) * 0.073),
+      #0000 calc(var(--card-w) * 0.0273),
+      #000 calc(var(--card-w) * 0.0295)
+    ),
+    radial-gradient(
+      circle calc(var(--card-w) * 0.032) at 50% calc(var(--card-w) * 0.073),
+      #0000 calc(var(--card-w) * 0.0273),
+      #000 calc(var(--card-w) * 0.0295)
+    ),
+    radial-gradient(
+      circle calc(var(--card-w) * 0.032) at calc(50% + var(--card-w) * 0.109)
+        calc(var(--card-w) * 0.073),
+      #0000 calc(var(--card-w) * 0.0273),
+      #000 calc(var(--card-w) * 0.0295)
+    );
+  mask-composite: intersect;
+}
+
+/* The frosted pane, as its own layer beneath the content so the card above
+   it stays a plain masked box.
+
+   No backdrop-filter: .hk-mini carries both a mask and a transform, which
+   make it its own backdrop root, so a blur in here has nothing behind it to
+   sample and silently does nothing. The glass is built optically instead —
+   a near-opaque dark base (the cards overlap by 20%, so anything thinner
+   lets the neighbour's text read straight through), a diagonal sheen, and
+   a lit top edge. The ambient wash behind still tints through the base. */
+.hk-mini::before {
+  content: "";
+  position: absolute;
+  inset: 0;
+  z-index: 0;
+  background: linear-gradient(
+      158deg,
+      rgba(255, 255, 255, 0.11),
+      rgba(255, 255, 255, 0.035) 42%,
+      rgba(255, 255, 255, 0.015) 70%,
+      rgba(255, 255, 255, 0.05)
+    ),
+    rgba(12, 15, 26, 0.93);
+  box-shadow: inset 0 1px 0 rgba(255, 255, 255, 0.09);
+  pointer-events: none;
+  transition: opacity 0.6s cubic-bezier(0.32, 0.72, 0, 1),
+    box-shadow 0.6s cubic-bezier(0.32, 0.72, 0, 1);
+}
+/* A second sheen layer that fades in on hover — brightening the pane
+   without touching the near-opaque base that keeps neighbours hidden. */
+.hk-mini .hk-mini-sheen {
+  position: absolute;
+  inset: 0;
+  z-index: 0;
+  opacity: 0;
+  background: linear-gradient(
+    158deg,
+    rgba(255, 255, 255, 0.08),
+    rgba(120, 170, 255, 0.05) 45%,
+    rgba(255, 140, 50, 0.05)
+  );
+  pointer-events: none;
+  transition: opacity 0.6s cubic-bezier(0.32, 0.72, 0, 1);
+}
+.hk-mini:hover .hk-mini-sheen,
+.hk-mini:focus-visible .hk-mini-sheen {
+  opacity: 1;
+}
+.hk-mini:hover::before,
+.hk-mini:focus-visible::before {
+  box-shadow: inset 0 1px 0 rgba(255, 255, 255, 0.18);
+}
+
+/* ─── Clickable cards ───
+   Carry a warmer border and a low orange bloom so they read as live at a
+   glance. Deliberately no badge, arrow or "open" label — the difference in
+   the card's own surface is the affordance. */
+.hk-mini--link {
+  border-color: rgba(255, 163, 74, 1);
+  box-shadow: 0 6px 20px -10px rgba(0, 0, 0, 0.6),
+    0 0 0 1px rgba(255, 122, 26, 0.22), 0 0 34px -10px rgba(255, 110, 20, 0.6);
+}
+.hk-mini--link::before {
+  background: linear-gradient(
+      158deg,
+      rgba(255, 255, 255, 0.13),
+      rgba(255, 160, 80, 0.05) 42%,
+      rgba(255, 255, 255, 0.02) 70%,
+      rgba(255, 255, 255, 0.06)
+    ),
+    rgba(16, 16, 26, 0.93);
+  box-shadow: inset 0 1px 0 rgba(255, 190, 140, 0.16);
+}
+/* ─── Corner brand mark ───
+   Top-left, above the glass and the dither art but below the perforation
+   frame.
+
+   No overlap compensation here, unlike the bottom-right anchoring this
+   replaced. Every overlap in the fan runs the same way the paint order does:
+   a card sits above its left-hand neighbour, and a row sits above the one it
+   tucks up into. So a card's own top-left is never the corner being covered —
+   it's the corner doing the covering, and a flat inset is enough.
+
+   Clears the three punch holes on the horizontal: they're centred (roughly
+   0.36–0.64 of the width), the mark ends near 0.17, so the two share the
+   stamp's header band without colliding. */
+.hk-mini-logo {
+  position: absolute;
+  left: calc(var(--card-w) * 0.062);
+  top: calc(var(--card-w) * 0.062);
+  z-index: 2;
+  display: flex;
+  font-size: calc(var(--card-w) * 0.105);
+  line-height: 0;
+  opacity: 0.92;
+  filter: drop-shadow(0 1px 4px rgba(0, 0, 0, 0.6));
+  pointer-events: none;
+  transition: transform 0.55s cubic-bezier(0.32, 0.72, 0, 1),
+    opacity 0.55s cubic-bezier(0.32, 0.72, 0, 1);
+}
+.hk-mini:hover .hk-mini-logo {
+  opacity: 1;
+  transform: translateY(-2px) scale(1.08);
+}
+
+/* Stamp restyle: a dashed orange "perforation" frame set in from the edge,
+   like the printed border of a postage stamp. Pure overlay. */
+.hk-mini::after {
+  content: "";
+  position: absolute;
+  inset: calc(var(--card-w) * 0.0273);
+  border: 1px dashed rgba(255, 122, 26, 0.42);
+  pointer-events: none;
+  z-index: 3;
+}
+/* Must follow the base rule — equal specificity, so source order decides. */
+.hk-mini--link::after {
+  border-color: rgba(255, 150, 62, 0.66);
+}
+
+/* First card of each row drops the overlap margin so the row centers. */
+.hk-cards-row .hk-mini:first-child {
+  margin-left: 0;
+}
+
+/* Symmetric fan across up to five cards — applies to every row. */
+.hk-cards-row .hk-mini:nth-child(1) {
+  --rot: -3deg;
+}
+.hk-cards-row .hk-mini:nth-child(2) {
+  --rot: -1.5deg;
+}
+.hk-cards-row .hk-mini:nth-child(3) {
+  --rot: 0deg;
+}
+.hk-cards-row .hk-mini:nth-child(4) {
+  --rot: 1.5deg;
+}
+.hk-cards-row .hk-mini:nth-child(5) {
+  --rot: 3deg;
+}
+
+.hk-mini:hover,
+.hk-mini:focus-visible {
+  z-index: 100;
+  outline: none;
+  transform: rotate(0deg) translateY(-12px) scale(1.03);
+  border-color: rgba(255, 140, 50, 0.85);
+  /* Layered shadows — tight contact + soft ambient + far diffusion +
+     an orange bloom that picks up the accent colour. */
+  box-shadow: 0 1px 2px rgba(0, 0, 0, 0.3),
+    0 8px 16px -4px rgba(0, 0, 0, 0.35), 0 30px 50px -18px rgba(0, 0, 0, 0.6),
+    0 0 0 1px rgba(255, 102, 0, 0.35), 0 0 44px -10px rgba(255, 102, 0, 0.3);
+}
+.hk-mini:active {
+  transform: rotate(0deg) translateY(-6px) scale(1.015);
+  transition: transform 0.2s cubic-bezier(0.32, 0.72, 0, 1),
+    box-shadow 0.2s cubic-bezier(0.32, 0.72, 0, 1);
+}
+
+/* Body content drifts up subtly, staggered so the eye reads it as the card
+   rising toward the viewer rather than everything moving in sync. */
+.hk-mini-q,
+.hk-mini-title,
+.hk-mini-detail {
+  transition: transform 0.55s cubic-bezier(0.32, 0.72, 0, 1);
+}
+.hk-mini:hover .hk-mini-q {
+  transform: translateY(-1px);
+}
+.hk-mini:hover .hk-mini-title {
+  transform: translateY(-2px);
+}
+.hk-mini:hover .hk-mini-detail {
+  transform: translateY(-2px);
+}
+
+/* ─── Peer pushback on hover ───
+   When any card is hovered, the others slide outward so the focused card
+   gets clean breathing room instead of overlapping its neighbors. All
+   non-hovered peers shift by the same 32px, preserving relative spacing.
+     :hover ~ .hk-mini   → cards AFTER the hovered one  → push right
+     :has(~ :hover)      → cards BEFORE the hovered one → push left
+   Both compound rotate(var(--rot)) so each keeps its tilt while sliding. */
+.hk-cards-row .hk-mini:hover ~ .hk-mini {
+  transform: rotate(var(--rot)) translateX(32px);
+}
+.hk-cards-row .hk-mini:has(~ .hk-mini:hover) {
+  transform: rotate(var(--rot)) translateX(-32px);
+}
+
+/* ─── Thumbnail: dithered art block ───
+   aspect-ratio (220:138) ties its height to the card width, so the
+   image:text split stays proportional as the card shrinks. */
+.hk-mini-art {
+  display: block;
+  width: 100%;
+  height: auto;
+  aspect-ratio: 220 / 138;
+  /* Transparent: the dither's sky is alpha-0, so the glass reads through it. */
+  background-color: transparent;
+  image-rendering: pixelated;
+  position: relative;
+  z-index: 1; /* above the ::before glass pane */
+  overflow: hidden;
+  flex: none;
+}
+
+/* ─── Body ───
+   Padding, gap and every font-size are fractions of --card-w so the text
+   shrinks in step with the card and the layout stays identical in
+   proportion. At 220px these resolve to 14/16px padding, 6px gap,
+   and 11/15/13px type. */
+.hk-mini-body {
+  padding: calc(var(--card-w) * 0.064) calc(var(--card-w) * 0.073)
+    calc(var(--card-w) * 0.073);
+  position: relative;
+  z-index: 1; /* above the ::before glass pane */
+  flex: 1;
+  min-height: 0; /* let the card's aspect-ratio height win */
+  display: flex;
+  flex-direction: column;
+  gap: calc(var(--card-w) * 0.027);
+  overflow: hidden;
+}
+/* Eyebrow question — small line that frames what the card answers. */
+.hk-mini-q {
+  font-size: calc(var(--card-w) * 0.05);
+  font-weight: 400;
+  line-height: 1.3;
+  /* Lifted off the raw #FF6600 — that orange vibrates against dark glass. */
+  color: #ff9147;
+  letter-spacing: -0.01em;
+  margin: 0 0 calc(var(--card-w) * 0.009);
+}
+.hk-mini-title {
+  font-weight: 600;
+  font-size: calc(var(--card-w) * 0.068);
+  line-height: 1.25;
+  color: #f5f5f5;
+  margin: 0;
+  letter-spacing: -0.01em;
+}
+.hk-mini-detail {
+  font-size: calc(var(--card-w) * 0.059);
+  color: rgba(255, 255, 255, 0.68);
+  line-height: 1.45;
+  margin: 0;
+}
+
+/* ─── Mobile: horizontal carousel ───
+   Bleeds to the glass panel's inner edge (not the viewport, which would
+   punch out of the rounded panel) so a half-visible next card signals that
+   the track scrolls. Left-aligned with the lead copy, not centered. */
+@media (max-width: 760px) {
+  .hk-cards {
+    --card-w: min(70vw, 240px);
+    /* Single row, nothing tucks over anything — the mark sits in the true
+       bottom corner again. */
+    --hk-row-overlap: 0px;
+    /* No fan to gather into here: the cards are a scrolling track, so walking
+       them to a "centre" would just shove them off-screen. Zeroing the offset
+       leaves the shuffle as a settle-in-place, which is what suits a carousel. */
+    --hk-gather: 0;
+    width: auto;
+    max-width: none;
+    margin: 20px calc(var(--hk-pad, 20px) * -1) 0;
+    flex-direction: row;
+    flex-wrap: nowrap;
+    align-items: center;
+    gap: 14px;
+    overflow-x: auto;
+    overscroll-behavior-x: contain;
+    scroll-snap-type: x mandatory;
+    -webkit-overflow-scrolling: touch;
+    scrollbar-width: none;
+    padding: 6px var(--hk-pad, 20px);
+    scroll-padding-left: var(--hk-pad, 20px);
+  }
+  .hk-cards::-webkit-scrollbar {
+    display: none;
+  }
+  /* Flatten the visual rows into one continuous scroll track. */
+  .hk-cards-row {
+    display: contents;
+  }
+  .hk-mini {
+    --card-w: min(74vw, 260px);
+    /* Cards sit side by side in the carousel — nothing tucks under anything,
+       so there's no overlap for the slot steps to subtract. (The steps go
+       unused here anyway: --hk-gather above zeroes the gather offsets.) */
+    --hk-col-overlap: 0px;
+    margin-left: 0;
+    flex: 0 0 auto;
+    transform: none; /* upright in the carousel (overrides --rot) */
+    scroll-snap-align: start;
+  }
+  /* `transform: none` is enough at rest, but the shuffle keyframes outrank it
+     and read --rot directly — so the tilt would reappear mid-animation and
+     then snap back out when the class drops. Zeroing the variable fixes it at
+     the source. Matches the nth-child specificity above and wins on order. */
+  .hk-cards-row .hk-mini:nth-child(n) {
+    --rot: 0deg;
+  }
+  .hk-mini:hover {
+    transform: none;
+    border-color: rgba(255, 122, 26, 0.5);
+    box-shadow: 0 6px 20px -10px rgba(0, 0, 0, 0.6);
+  }
+  .hk-mini:hover::before {
+    background: rgba(255, 255, 255, 0.055);
+    box-shadow: inset 0 1px 0 rgba(255, 255, 255, 0.08);
+  }
+  .hk-cards-row .hk-mini:hover ~ .hk-mini,
+  .hk-cards-row .hk-mini:has(~ .hk-mini:hover) {
+    transform: none;
+  }
+}
+
+/* ─── Shuffle animation ───
+   Gather to the centre, reorder while piled, deal back out. Durations here are
+   mirrored by GATHER_MS / SPREAD_MS in CodingHabits.tsx — change both.
+
+   Nothing fades. The cards stay fully opaque the whole way; the reorder is
+   hidden by the pile itself, not by transparency.
+
+   `both` fill is load-bearing. Cards are staggered, so the first one reaches
+   the pile ~420ms before the last; without a held end state it would spring
+   back to its slot while the rest were still arriving. */
+.hk-cards--gather .hk-mini,
+.hk-cards--spread .hk-mini {
+  /* The hover lift and peer-pushback rules both write transform, and would
+     fight the keyframes if a cursor happened to be resting on the fan. */
+  pointer-events: none;
+}
+.hk-cards--gather .hk-mini {
+  animation: hk-gather 750ms cubic-bezier(0.5, 0, 0.75, 0.2) both;
+}
+.hk-cards--spread .hk-mini {
+  animation: hk-spread 1050ms cubic-bezier(0.2, 0.85, 0.2, 1) both;
+}
+
+/* Collecting the deck. Every card lands squarely on the fan's midpoint at
+   rotate(0) — a flush stack, which is what makes the pile read as one card and
+   the reorder underneath it invisible. Squaring up also removes the only seam
+   the swap could show: the pile pose is identical for every card, so it can't
+   jump when a card changes slot mid-pile. */
+@keyframes hk-gather {
+  0% {
+    transform: rotate(var(--rot)) translate(0, 0) scale(1);
+  }
+  100% {
+    transform: rotate(0deg) translate(var(--hk-gx), var(--hk-gy)) scale(0.88);
+  }
+}
+
+/* Dealing back out. 0% matches hk-gather's 100% exactly — both resolve to the
+   fan's centre, whichever slot the card now belongs to. The 60% stop throws
+   each card past its slot on its own random --hk-dx / --hk-spin before it
+   settles, so fifteen cards land on fifteen different arcs. */
+@keyframes hk-spread {
+  0% {
+    transform: rotate(0deg) translate(var(--hk-gx), var(--hk-gy)) scale(0.88);
+  }
+  60% {
+    transform: rotate(calc(var(--rot) + var(--hk-spin, 0deg) * 0.5))
+      translate(calc(var(--hk-dx, 0px) * 0.35), -10px) scale(1.03);
+  }
+  100% {
+    transform: rotate(var(--rot)) translate(0, 0) scale(1);
+  }
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .hk-mini,
+  .hk-mini-q,
+  .hk-mini-title,
+  .hk-mini-detail {
+    transition: none;
+  }
+  /* The reorder still happens on the same schedule — the cards just swap in
+     place instead of flying. */
+  .hk-cards--gather .hk-mini,
+  .hk-cards--spread .hk-mini {
+    animation: none;
+  }
+  .hk-shuffle:disabled .hk-shuffle-icon {
+    animation: none;
+  }
+}
