@@ -173,7 +173,7 @@ const ContactReal = () => {
               <label htmlFor="c-email" className="mb-1.5 block text-xs font-medium text-neutral-400">
                 Email
               </label>
-              <input id="c-email" name="email" type="email" value={form.email} onChange={set("email")} required placeholder="you@company.com" className={FIELD} />
+              <input id="c-email" name="email" type="email" value={form.email} onChange={set("email")} required placeholder="your@company.com" className={FIELD} />
             </div>
           </div>
 

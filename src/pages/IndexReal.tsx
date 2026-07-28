@@ -4,6 +4,7 @@ import fein from "@/soothing.mp3";
 import { MusicToggleButton } from "@/components/v1/skiper25";
 import ContactReal from "@/components/ContactReal";
 import CodingHabits from "@/components/CodingHabits";
+import MeshText from "@/components/MeshText";
 import { Badge } from "@/components/ui/badge";
 import { skillsData } from "@/data/skills";
 import {
@@ -97,9 +98,39 @@ const SectionHead = ({ title, label }: { title: string; label: string }) => (
   </div>
 );
 
+/* Hero name typography for MeshText, which rasterises through canvas 2D rather
+   than CSS. Two consequences:
+
+   • fontFamily is quoted — it lands in `ctx.font`, where an unquoted family
+     containing a space is invalid and silently falls back to sans-serif.
+   • weight 700, not the 500 the CSS <h1> used. The preview props specify Bold,
+     and index.css loads Space Grotesk at 400;500;600;700 so 700 is a real cut
+     rather than a synthesised one. Heavier type also carries the mesh
+     distortion better — there is more glyph area to push around.
+
+   No letterSpacing: the component measures a single fillText call and doesn't
+   thread ctx.letterSpacing through, so the old -0.04em has no equivalent. */
+const HERO_NAME_FONT = {
+  fontFamily: "'Space Grotesk'",
+  fontWeight: 700,
+} as const;
+
+/* Canvas box for the name, per breakpoint. Font sizes are unchanged from the
+   CSS <h1> (text-4xl / text-6xl); the heights are ~1.8x that, because the
+   wrapper clips (overflow: hidden) and the mesh needs somewhere to push the
+   glyphs into. Too tight and the distortion is shaved off at the edges. */
+const HERO_NAME_SIZE = {
+  mobile: { fontSize: 36, height: 66 },
+  desktop: { fontSize: 60, height: 110 },
+} as const;
+
 const IndexReal = () => {
   const [pos, setPos] = useState({ x: 0, y: 0 });
   const [isMobile, setIsMobile] = useState(false);
+  /* The hero switches to two columns at lg, where the name goes left-aligned.
+     ElasticText takes one textAlign, so the breakpoint is read here rather
+     than expressed as a `lg:` class the inline style would override anyway. */
+  const [isLgUp, setIsLgUp] = useState(false);
   const [hasDragged, setHasDragged] = useState(false);
   const [active, setActive] = useState<string>("home");
   /* The contributions API returns 0 for this account, which rendered a full
@@ -139,7 +170,10 @@ const IndexReal = () => {
   };
 
   useEffect(() => {
-    const syncViewport = () => setIsMobile(window.innerWidth < 640);
+    const syncViewport = () => {
+      setIsMobile(window.innerWidth < 640);
+      setIsLgUp(window.innerWidth >= 1024);
+    };
 
     syncViewport();
     window.addEventListener("resize", syncViewport);
@@ -214,7 +248,14 @@ const IndexReal = () => {
     <div className="hk-real min-h-screen bg-neutral-950 text-neutral-50">
       <div className="pointer-events-none fixed inset-0 -z-10 bg-[radial-gradient(circle_at_top,rgba(255,255,255,0.05),transparent_55%),radial-gradient(ellipse_at_bottom,rgba(29,78,216,0.28),transparent_65%)]" />
 
-      <main className="relative z-10 mx-auto w-full max-w-5xl px-4 pb-32 pt-12 sm:px-6 sm:pb-28 sm:pt-20">
+      {/* 1152px, deliberately halfway. This was 1024px (max-w-5xl), which left
+          ~200px of dead gutter at 1440 and ~450px at 1920; widening it to 1280
+          claimed all of that back but overshot — the page read too wide. 6xl
+          splits the difference and is where it stays.
+
+          Side padding still grows with the breakpoints so content never sits
+          flush to the edge on viewports narrower than the cap. */}
+      <main className="relative z-10 mx-auto w-full max-w-6xl px-4 pb-32 pt-12 sm:px-6 sm:pb-28 sm:pt-20 lg:px-8">
         {/* `.hk-flow` sets one gap between every section. Before this, spacing
             came from per-section mt-5 classes plus a legacy `margin-bottom:
             10rem` on #resume and #skills, which put 160px voids in two places
@@ -222,10 +263,40 @@ const IndexReal = () => {
         <div className="hk-flow">
           {/* ══ Hero ══ */}
           <section id="home" className="flex flex-col gap-10 lg:flex-row lg:items-center lg:justify-between lg:gap-8">
+            {/* Back to max-w-xl now the container is 1152 rather than 1280. At
+                2xl the text block's ~640px of max-content plus the 420px card
+                plus gap-8 overruns the 1088px of usable width, so the flex row
+                shrinks the text and the two columns end up 32px apart. 576px
+                fits with room to spare, and justify-between turns the slack
+                into a ~92px gap. */}
             <div className="min-w-0 max-w-xl text-center lg:text-left">
-              <h1 className="font-['Space_Grotesk'] text-4xl font-medium tracking-[-0.04em] text-white sm:text-6xl">
-                Harsh Kochar
-              </h1>
+              {/* MeshText paints the name into a WebGL canvas, so no glyph of
+                  it exists in the DOM. The real <h1> therefore has to live
+                  here, visually hidden: it keeps the page's only top-level
+                  heading intact for crawlers and screen readers, while the
+                  canvas is marked aria-hidden inside the component so the name
+                  isn't announced twice. Delete one and you lose either the
+                  heading or the effect. */}
+              <h1 className="sr-only">Harsh Kochar</h1>
+              <MeshText
+                text="Harsh Kochar"
+                color="#FFFFFF"
+                font={{
+                  ...HERO_NAME_FONT,
+                  fontSize: isMobile
+                    ? HERO_NAME_SIZE.mobile.fontSize
+                    : HERO_NAME_SIZE.desktop.fontSize,
+                  textAlign: isLgUp ? "left" : "center",
+                }}
+                /* Explicit height is mandatory — the component's wrapper is
+                   height:100%, which resolves to 0 in this auto-height column
+                   and renders an invisible canvas. */
+                style={{
+                  height: isMobile
+                    ? HERO_NAME_SIZE.mobile.height
+                    : HERO_NAME_SIZE.desktop.height,
+                }}
+              />
 
               <p className="mt-3 text-base text-neutral-300 sm:text-lg">
                 Full-stack developer building{" "}
@@ -579,22 +650,8 @@ const IndexReal = () => {
         {/* ══ Footer ══ */}
         <footer className="mt-20 flex flex-col items-center gap-3 border-t border-white/[0.08] pt-8 text-center sm:mt-24 sm:flex-row sm:justify-between sm:text-left">
           <p className="text-xs text-neutral-500">
-            Built by Harsh Kochar · React, TypeScript, Tailwind
+            Built by Harsh Kochar
           </p>
-          <div className="flex items-center gap-1">
-            {SOCIAL_LINKS.map(({ href, icon: Icon, label }) => (
-              <a
-                key={label}
-                href={href}
-                target="_blank"
-                rel="noopener noreferrer"
-                className="flex h-8 w-8 items-center justify-center rounded-full text-neutral-500 transition-colors hover:bg-white/[0.08] hover:text-white"
-                aria-label={label}
-              >
-                <Icon className="h-3.5 w-3.5" aria-hidden />
-              </a>
-            ))}
-          </div>
         </footer>
       </main>
 
