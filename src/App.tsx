@@ -12,6 +12,7 @@ import AuraBackground from "./components/AuraBackground";
 import { useState, useEffect } from "react";
 import { PortfolioVersionProvider, usePortfolioVersion } from "@/components/portfolio/portfolio-version";
 import PortfolioVersionToggle from "@/components/portfolio/PortfolioVersionToggle";
+import { Analytics } from "@vercel/analytics/react";
 
 const queryClient = new QueryClient();
 
@@ -96,6 +97,10 @@ const App = () => {
                 <Route path="/" element={<Suspense fallback={<div className="min-h-screen flex items-center justify-center" />}><Index /></Suspense>} />
                 <Route path="*" element={<NotFound />} />
               </Routes>
+              {/* Vercel Web Analytics. The /react entry (not /next — this is a Vite SPA)
+                  patches history itself, so client-side route changes are tracked without
+                  any router wiring. No-ops off Vercel, so local dev stays clean. */}
+              <Analytics />
             </div>
           </BrowserRouter>
           </PortfolioVersionProvider>
